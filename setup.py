@@ -6,7 +6,7 @@ setup(
     description="Database models for ZeroHungerAI",
     author="R G B",
     author_email="gabrielbongocan@gmail.com",
-    packages=find_packages(),
+    packages=["zhai_db_models"],
     install_requires=[
         "geoalchemy2>=0.18.0",
         "sqlalchemy>=2.0.43",
