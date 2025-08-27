@@ -6,23 +6,23 @@ from sqlalchemy import (
     Integer,
     String,
     UniqueConstraint,
+    func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 
-from zhai_db_models.models import Base
+from .base import Base
 
 
 class ArticleQuery(Base):
     __tablename__ = "article_queries"
 
-    # to be manually provided
+    # to be manually inserted
     id = Column(Integer, primary_key=True)
     body = Column(JSONB, nullable=False)
 
 
 class ArticleUriResult(Base):
     __tablename__ = "article_uri_results"
-    # __table_args__ = (UniqueConstraint("uri", name="uq_article_uri"),)
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     uri = Column(String, nullable=False, unique=True)
@@ -31,3 +31,17 @@ class ArticleUriResult(Base):
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
     queried_at = Column(DateTime, nullable=False)
+
+
+class ArticleUri(Base):
+    __tablename__ = "article_uris"
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    dtype = Column(String)
+    value = Column(String)
+    uri = Column(String)
+
+    __table_args__ = (UniqueConstraint("uri", name="unique_uri"),)

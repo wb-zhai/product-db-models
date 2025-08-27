@@ -1,36 +1,18 @@
 from geoalchemy2.types import Geometry
 from sqlalchemy import (
-    REAL,
     Boolean,
     CheckConstraint,
     Column,
     Computed,
     DateTime,
-    Float,
-    ForeignKey,
     Integer,
     String,
     UniqueConstraint,
     func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
-
-
-class ArticleUri(Base):
-    __tablename__ = "article_uris"
-
-    id = Column(Integer, primary_key=True)
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
-    dtype = Column(String)
-    value = Column(String)
-    uri = Column(String)
-
-    __table_args__ = (UniqueConstraint("uri", name="unique_uri"),)
+from .base import Base
 
 
 class Geotaxonomy(Base):
@@ -99,43 +81,3 @@ class GeotaxonomyConceptUriDirectMatch(Base):
     uri = Column(String)
     country_uri = Column(String)
     meta = Column(JSONB)
-
-
-class FoodSecurityDummy(Base):
-    __tablename__ = "food_security_dummy"
-    __table_args__ = (
-        {"info": {"skip_autogenerate": True}},
-    )
-
-    id = Column(Integer, primary_key=True)
-    country = Column(String, nullable=False)
-    adm_level = Column(Integer, nullable=False)
-    adm0_code = Column(String, nullable=False)
-    adm1_code = Column(String, nullable=True)
-    adm2_code = Column(String, nullable=True)
-    adm_code = Column(String, nullable=False)
-    year = Column(Integer, nullable=False)
-    month = Column(Integer, nullable=False)
-    ipc_score = Column(REAL, nullable=False)
-
-
-# class ArticleQuery(Base):
-#     __tablename__ = "article_queries"
-
-#     # to be manually provided
-#     id = Column(Integer, primary_key=True)
-#     body = Column(JSONB, nullable=False)
-
-
-# class ArticleUriResult(Base):
-#     __tablename__ = "article_uri_results"
-#     # __table_args__ = (UniqueConstraint("uri", name="uq_article_uri"),)
-
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     uri = Column(String, nullable=False, unique=True)
-#     query_id = Column(Integer, ForeignKey("article_queries.id"), nullable=False)
-#     weight = Column(Float, nullable=False)
-#     page_id = Column(Integer, nullable=False)
-#     queried_at = Column(DateTime, nullable=False)
-#     queried_at = Column(DateTime, nullable=False)
-
