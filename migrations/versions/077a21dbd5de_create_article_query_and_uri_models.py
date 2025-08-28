@@ -28,7 +28,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
-        "article_uri_results",
+        "article_uris",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("uri", sa.String(), nullable=False),
         sa.Column("query_id", sa.Integer(), nullable=False),
@@ -46,5 +46,5 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_table("article_uri_results")
+    op.drop_table("article_uris")
     op.drop_table("article_queries")

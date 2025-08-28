@@ -55,7 +55,7 @@ def upgrade() -> None:
         sa.Column("published_at", sa.DateTime(), nullable=False),
         sa.ForeignKeyConstraint(
             ["uri"],
-            ["article_uri_results.uri"],
+            ["article_uris.uri"],
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("cloud_uri"),
