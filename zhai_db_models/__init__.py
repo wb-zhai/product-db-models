@@ -1,7 +1,8 @@
-from .models import (
-    ArticleUri,
+from .articles import ArticleQuery, ArticleUri
+from .base import Base
+from .food_security import FoodSecurityDummy
+from .geotaxonomy import (
     Base,
-    FoodSecurityDummy,
     Geotaxonomy,
     GeotaxonomyConceptUriDirectMatch,
     GeotaxonomyShape,
