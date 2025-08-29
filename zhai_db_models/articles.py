@@ -23,6 +23,7 @@ class ArticleUri(Base):
     weight = Column(Float, nullable=False)
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
+    request_id = Column(UUID(as_uuid=True), nullable=False)
 
 
 article_concept_association = Table('article_concept_association', Base.metadata,
