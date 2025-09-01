@@ -10,7 +10,7 @@ class ArticleQuery(Base):
     __tablename__ = "article_queries"
 
     # to be manually inserted
-    id = Column(UUID(as_uuid=True), primary_key=True)
+    uuid = Column(UUID(as_uuid=True), primary_key=True)
     body = Column(JSONB, nullable=False)
 
 
