@@ -19,7 +19,7 @@ class ArticleUri(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     uri = Column(String, nullable=False, unique=True)
-    query_id = Column(UUID(as_uuid=True), ForeignKey("article_queries.id"), nullable=False)
+    query_id = Column(UUID(as_uuid=True), ForeignKey("article_queries.uuid"), nullable=False)
     weight = Column(Float, nullable=False)
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
