@@ -1,6 +1,6 @@
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -10,7 +10,7 @@ class ArticleQuery(Base):
     __tablename__ = "article_queries"
 
     # to be manually inserted
-    id = Column(Integer, primary_key=True)
+    uuid = Column(UUID(as_uuid=True), primary_key=True)
     body = Column(JSONB, nullable=False)
 
 
@@ -19,10 +19,11 @@ class ArticleUri(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     uri = Column(String, nullable=False, unique=True)
-    query_id = Column(Integer, ForeignKey("article_queries.id"), nullable=False)
+    query_id = Column(UUID(as_uuid=True), ForeignKey("article_queries.uuid"), nullable=False)
     weight = Column(Float, nullable=False)
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
+    request_id = Column(UUID(as_uuid=True), nullable=False)
 
 
 article_concept_association = Table('article_concept_association', Base.metadata,
