@@ -1,8 +1,8 @@
 """Create article download and concept uri models
 
-Revision ID: 9c3dbacf4eff
-Revises: 077a21dbd5de
-Create Date: 2025-08-27 19:48:14.989909
+Revision ID: 4dd6973884db
+Revises: cfd82b7ec7ff
+Create Date: 2025-09-02 15:42:03.939295
 
 """
 
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "9c3dbacf4eff"
-down_revision: Union[str, Sequence[str], None] = "077a21dbd5de"
+revision: str = "4dd6973884db"
+down_revision: Union[str, Sequence[str], None] = "cfd82b7ec7ff"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -41,7 +41,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("concept_uri"),
     )
     op.create_index(
-        "idx_concept_uris_latlon",
+        "idx_concept_uris_latlon_geom",
         "concept_uris",
         ["geom"],
         unique=False,
@@ -81,6 +81,6 @@ def downgrade() -> None:
     op.drop_table("article_concept_association")
     op.drop_table("article_downloads")
     op.drop_index(
-        "idx_concept_uris_latlon", table_name="concept_uris", postgresql_using="gist"
+        "idx_concept_uris_latlon_geom", table_name="concept_uris", postgresql_using="gist"
     )
     op.drop_table("concept_uris")
