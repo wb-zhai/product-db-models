@@ -1,8 +1,8 @@
 """Create article query and uri models
 
-Revision ID: 077a21dbd5de
+Revision ID: cfd82b7ec7ff
 Revises: b98b96b9d218
-Create Date: 2025-08-27 18:55:47.175472
+Create Date: 2025-09-02 15:40:03.587884
 
 """
 
@@ -13,7 +13,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "077a21dbd5de"
+revision: str = "cfd82b7ec7ff"
 down_revision: Union[str, Sequence[str], None] = "b98b96b9d218"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,21 +23,21 @@ def upgrade() -> None:
     """Upgrade schema."""
     op.create_table(
         "article_queries",
-        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("uuid", sa.UUID(), nullable=False),
         sa.Column("body", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint("uuid"),
     )
     op.create_table(
         "article_uris",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("uri", sa.String(), nullable=False),
-        sa.Column("query_id", sa.Integer(), nullable=False),
+        sa.Column("query_uuid", sa.UUID(), nullable=False),
         sa.Column("weight", sa.Float(), nullable=False),
         sa.Column("page_id", sa.Integer(), nullable=False),
         sa.Column("queried_at", sa.DateTime(), nullable=False),
+        sa.Column("request_id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(
-            ["query_id"],
-            ["article_queries.id"],
+            ["query_uuid"], ["article_queries.uuid"], name="fk_article_uris_query_uuid"
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("uri"),
