@@ -4,7 +4,6 @@ from geoalchemy2 import Geometry
 from sqlalchemy import (
     Column,
     DateTime,
-    Enum,
     Float,
     ForeignKey,
     Index,
@@ -12,7 +11,7 @@ from sqlalchemy import (
     String,
     Table,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -89,7 +88,7 @@ class ConceptUri(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     concept_uri = Column(String, unique=True, nullable=False)
-    concept_type = Column(Enum(ConceptType, name="concept_enum"), nullable=False)
+    concept_type = Column(ENUM(ConceptType, name="concept_enum", create_type=True), nullable=False)
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
 
