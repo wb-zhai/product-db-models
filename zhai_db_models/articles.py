@@ -56,7 +56,7 @@ class ArticleDownload(Base):
     cloud_uri = Column(String, unique=True, nullable=False)
     published_at = Column(DateTime, nullable=False)
 
-    concepts = relationship(
+    concept_uris = relationship(
         "ConceptUri",
         secondary=article_concept_association,
         back_populates="article_downloads",
@@ -92,7 +92,7 @@ class ConceptUri(Base):
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
 
-    articles = relationship(
+    article_downloads = relationship(
         "ArticleDownload",
         secondary=article_concept_association,
         back_populates="concept_uris",
@@ -101,13 +101,3 @@ class ConceptUri(Base):
     def __repr__(self):
         return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
 
-    geom = Column(Geometry("POINT", srid=4326), nullable=True)
-
-    articles = relationship(
-        "ArticleDownload",
-        secondary=article_concept_association,
-        back_populates="concept_uris",
-    )
-
-    def __repr__(self):
-        return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
