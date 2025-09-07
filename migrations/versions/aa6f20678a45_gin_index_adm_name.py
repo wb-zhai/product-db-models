@@ -1,4 +1,4 @@
-"""Gin-index adm_name
+"""Create pg_trgm; gin-index adm_name
 
 Revision ID: aa6f20678a45
 Revises: 00b44e406324
