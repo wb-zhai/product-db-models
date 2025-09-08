@@ -88,7 +88,7 @@ class ConceptUri(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     concept_uri = Column(String, unique=True, nullable=False)
-    concept_type = Column(ENUM(ConceptType, name="concept_enum", create_type=True), nullable=False)
+    concept_type = Column(ENUM(ConceptType, name="concept_enum", create_type=False), nullable=False)
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
 
