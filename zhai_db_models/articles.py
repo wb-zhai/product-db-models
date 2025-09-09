@@ -28,7 +28,7 @@ class ArticleUri(Base):
     __tablename__ = "article_uris"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    uri = Column(String, nullable=False)
+    uri = Column(String, nullable=False, index=True)
     query_uuid = Column(
         UUID(as_uuid=True),
         ForeignKey("article_queries.uuid", name="fk_article_uris_query_uuid"),
@@ -52,7 +52,7 @@ class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    uri = Column(String, ForeignKey("article_uris.uri"), nullable=False, unique=True)
+    uri = Column(String, nullable=False, unique=True, index=True)
     cloud_uri = Column(String, unique=True, nullable=False)
     published_at = Column(DateTime, nullable=False)
 
