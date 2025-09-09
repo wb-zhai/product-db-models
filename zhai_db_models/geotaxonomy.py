@@ -5,6 +5,7 @@ from sqlalchemy import (
     Column,
     Computed,
     DateTime,
+    Index,
     Integer,
     String,
     UniqueConstraint,
@@ -18,11 +19,22 @@ from .base import Base
 class Geotaxonomy(Base):
     __tablename__ = "geo_taxonomy"
     __table_args__ = (
+        Index(
+            "idx_geotaxonomy_adm_name_trgm",
+            "adm_name",
+            postgresql_using="gin",
+            postgresql_ops={"adm_name": "gin_trgm_ops"},
+        ),
+        # comment the line below to generate migrations for this table
         {"info": {"skip_autogenerate": True}},
     )
 
     id = Column(Integer, primary_key=True)
-    adm_level = Column(Integer, CheckConstraint("adm_level BETWEEN 0 AND 2", name="check_adm_level"), nullable=False)
+    adm_level = Column(
+        Integer,
+        CheckConstraint("adm_level BETWEEN 0 AND 2", name="check_adm_level"),
+        nullable=False,
+    )
     adm0_code = Column(String, nullable=False)
     adm0_name = Column(String, nullable=False)
     adm1_code = Column(String)
@@ -70,7 +82,9 @@ class GeotaxonomyConceptUri(Base):
 
 class GeotaxonomyConceptUriDirectMatch(Base):
     __tablename__ = "geo_taxonomy_concept_uris_direct_match"
-    __table_args__ = (UniqueConstraint("code", "uri", name="unique_code_uri_direct_match"),)
+    __table_args__ = (
+        UniqueConstraint("code", "uri", name="unique_code_uri_direct_match"),
+    )
 
     id = Column(Integer, primary_key=True)
     created_at = Column(
