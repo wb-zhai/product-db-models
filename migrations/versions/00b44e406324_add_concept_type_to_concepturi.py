@@ -22,7 +22,7 @@ concept_enum = postgresql.ENUM('wiki', 'person', 'loc', 'org', name='concept_enu
 def upgrade() -> None:
     """Upgrade schema."""
     concept_enum.create(op.get_bind())
-    op.add_column('concept_uris', sa.Column('concept_type', postgresql.ENUM('WIKI', 'PERSON', 'LOCATION', 'ORGANIZATION', name='concept_enum'), nullable=False))
+    op.add_column('concept_uris', sa.Column('concept_type', concept_enum, nullable=False))
 
 
 def downgrade() -> None:
