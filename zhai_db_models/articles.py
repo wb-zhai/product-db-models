@@ -73,10 +73,10 @@ class ArticleDownload(Base):
 
 
 class ConceptType(enum.Enum):
-    WIKI = "wiki"
-    PERSON = "person"
-    LOCATION = "loc"
-    ORGANIZATION = "org"
+    wiki = "wiki"
+    person = "person"
+    loc = "loc"
+    org = "org"
 
 
 class ConceptUri(Base):
