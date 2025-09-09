@@ -28,7 +28,7 @@ class ArticleUri(Base):
     __tablename__ = "article_uris"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    uri = Column(String, nullable=False, unique=True)
+    uri = Column(String, nullable=False)
     query_uuid = Column(
         UUID(as_uuid=True),
         ForeignKey("article_queries.uuid", name="fk_article_uris_query_uuid"),
