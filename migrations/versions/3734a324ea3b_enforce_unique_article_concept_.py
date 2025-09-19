@@ -20,15 +20,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.create_table('geo_taxonomy_concept_uris',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-    sa.Column('code', sa.String(), nullable=True),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('uri', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name', 'uri', name='unique_name_uri')
-    )
     op.alter_column('article_concept_association', 'article_uri',
                existing_type=sa.VARCHAR(),
                nullable=False)
@@ -47,4 +38,3 @@ def downgrade() -> None:
     op.alter_column('article_concept_association', 'article_uri',
                existing_type=sa.VARCHAR(),
                nullable=True)
-    op.drop_table('geo_taxonomy_concept_uris')
