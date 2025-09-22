@@ -44,9 +44,8 @@ class ArticleUri(Base):
 article_concept_association = Table(
     "article_concept_association",
     Base.metadata,
-    Column("article_uri", String, ForeignKey("article_downloads.uri")),
-    Column("concept_uri", String, ForeignKey("concept_uris.concept_uri")),
-    PrimaryKeyConstraint("article_uri", "concept_uri"),
+    Column("article_uri", String, ForeignKey("article_downloads.uri"), primary_key=True),
+    Column("concept_uri", String, ForeignKey("concept_uris.concept_uri"), primary_key=True),
 )
 
 
