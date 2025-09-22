@@ -8,9 +8,9 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
-    PrimaryKeyConstraint,
     String,
     Table,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
 from sqlalchemy.orm import relationship
@@ -46,7 +46,7 @@ article_concept_association = Table(
     Base.metadata,
     Column("article_uri", String, ForeignKey("article_downloads.uri")),
     Column("concept_uri", String, ForeignKey("concept_uris.concept_uri")),
-    PrimaryKeyConstraint("article_uri", "concept_uri"),
+    UniqueConstraint("article_uri", "concept_uri"),
 )
 
 
