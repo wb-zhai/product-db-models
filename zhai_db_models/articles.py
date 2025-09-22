@@ -53,6 +53,7 @@ class ArticleDownload(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     uri = Column(String, nullable=False, unique=True, index=True)
+    language = Column(String, nullable=False)
     cloud_uri = Column(String, unique=True, nullable=False)
     published_at = Column(DateTime, nullable=False)
 
