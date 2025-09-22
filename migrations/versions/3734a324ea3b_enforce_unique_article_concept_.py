@@ -27,10 +27,20 @@ def upgrade() -> None:
                existing_type=sa.VARCHAR(),
                nullable=False)
     op.create_foreign_key('fk_article_concept_association_uris', 'article_concept_association', 'article_downloads', ['article_uri'], ['uri'])
+    op.create_unique_constraint(
+        'uq_article_concept_association',
+        'article_concept_association',
+        ['article_uri', 'concept_uri'],
+    )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.drop_constraint(
+        'uq_article_concept_association',
+        'article_concept_association',
+        type_='unique',
+    )
     op.drop_constraint('fk_article_concept_association_uris', 'article_concept_association', type_='foreignkey')
     op.alter_column('article_concept_association', 'concept_uri',
                existing_type=sa.VARCHAR(),
