@@ -26,12 +26,12 @@ def upgrade() -> None:
     op.alter_column('article_concept_association', 'concept_uri',
                existing_type=sa.VARCHAR(),
                nullable=False)
-    op.create_foreign_key(None, 'article_concept_association', 'article_downloads', ['article_uri'], ['uri'])
+    op.create_foreign_key('fk_article_concept_association_uris', 'article_concept_association', 'article_downloads', ['article_uri'], ['uri'])
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_constraint(None, 'article_concept_association', type_='foreignkey')
+    op.drop_constraint('fk_article_concept_association_uris', 'article_concept_association', type_='foreignkey')
     op.alter_column('article_concept_association', 'concept_uri',
                existing_type=sa.VARCHAR(),
                nullable=True)
