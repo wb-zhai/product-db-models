@@ -7,7 +7,7 @@ from .articles import (
     article_concept_association,
 )
 from .base import Base
-from .food_security import FoodSecurityDummy
+from .food_security import FoodInsecurityScore, FoodSecurityDummy
 from .geotaxonomy import (
     Base,
     Geotaxonomy,
