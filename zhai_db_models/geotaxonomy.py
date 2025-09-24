@@ -67,19 +67,6 @@ class GeotaxonomyShape(Base):
     adm_level = Column(Integer, nullable=False, default=-1)
 
 
-class GeotaxonomyConceptUri(Base):
-    __tablename__ = "geo_taxonomy_concept_uris"
-    __table_args__ = (UniqueConstraint("name", "uri", name="unique_name_uri"),)
-
-    id = Column(Integer, primary_key=True)
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
-    code = Column(String, nullable=True)
-    name = Column(String)
-    uri = Column(String)
-
-
 class GeotaxonomyConceptUriDirectMatch(Base):
     __tablename__ = "geo_taxonomy_concept_uris_direct_match"
     __table_args__ = (
