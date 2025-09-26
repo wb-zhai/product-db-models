@@ -44,3 +44,12 @@ class FoodInsecurityScore(Base):
     score = Column(Integer, nullable=False)
     adm_code = Column(String, nullable=False)
     year_month = Column(Date, nullable=False)
+
+
+class RiskFactor(Base):
+    __tablename__ = "risk_factors"
+
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
+    name = Column(String, nullable=False, unique=True)
