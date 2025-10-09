@@ -43,8 +43,8 @@ class ArticleUri(Base):
 article_concept_association = Table(
     "article_concept_association",
     Base.metadata,
-    Column("article_uri", String, ForeignKey("article_downloads.uri"), primary_key=True),
-    Column("concept_uri", String, ForeignKey("concept_uris.concept_uri"), primary_key=True),
+    Column("article_uri", String, ForeignKey("article_downloads.uri", name="fk_article_concept_association_article_uri"), primary_key=True),
+    Column("concept_uri", String, ForeignKey("concept_uris.concept_uri", name="fk_article_concept_association_concept_uri"), primary_key=True),
 )
 
 
