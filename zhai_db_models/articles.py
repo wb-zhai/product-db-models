@@ -28,8 +28,7 @@ class ArticleQuery(Base):
 class ArticleUri(Base):
     __tablename__ = "article_uris"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    uri = Column(String, nullable=False, index=True)
+    uri = Column(String, primary_key=True)
     query_uuid = Column(
         UUID(as_uuid=True),
         ForeignKey("article_queries.uuid", name="fk_article_uris_query_uuid"),
@@ -52,8 +51,7 @@ article_concept_association = Table(
 class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    uri = Column(String, nullable=False, unique=True, index=True)
+    uri = Column(String, primary_key=True)
     language = Column(String, nullable=False)
     cloud_uri = Column(String, unique=True, nullable=False)
     published_at = Column(DateTime, nullable=False)
@@ -88,8 +86,7 @@ class ConceptUri(Base):
         Index("idx_concept_uris_latlon_geom", "geom", postgresql_using="gist"),
     )
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    concept_uri = Column(String, unique=True, nullable=False)
+    concept_uri = Column(String, primary_key=True)
     concept_type = Column(ENUM(ConceptType, name="concept_enum", create_type=True), nullable=False)
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
