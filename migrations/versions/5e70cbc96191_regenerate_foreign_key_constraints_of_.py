@@ -20,6 +20,12 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
+    op.create_primary_key(
+        "pk_article_downloads", "article_downloads", ["uri"]
+    )
+    op.create_primary_key(
+        "pk_concept_uris", "concept_uris", ["concept_uri"]
+    )
     op.create_foreign_key(
         "fk_article_concept_association_concept_uri",
         "article_concept_association",
@@ -48,3 +54,5 @@ def downgrade() -> None:
         "article_concept_association",
         type_="foreignkey",
     )
+    op.drop_constraint("pk_concept_uris", "concept_uris", type_="primary")
+    op.drop_constraint("pk_article_downloads", "article_downloads", type_="primary")
