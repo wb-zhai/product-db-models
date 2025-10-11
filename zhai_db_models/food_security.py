@@ -5,7 +5,9 @@ from sqlalchemy import (
     Date,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
+    PrimaryKeyConstraint,
     String,
     UniqueConstraint,
     func,
@@ -15,6 +17,7 @@ from sqlalchemy.orm import relationship
 from .base import Base
 
 
+# TODO: delete this table once endpoints are refactored to use FoodInsecurityScore
 class FoodSecurityDummy(Base):
     __tablename__ = "food_security_dummy"
     __table_args__ = (
@@ -36,11 +39,15 @@ class FoodSecurityDummy(Base):
 class FoodInsecurityScore(Base):
     __tablename__ = "food_insecurity_scores"
     __table_args__ = (
+        PrimaryKeyConstraint("adm_code", "year_month", name="pk_food_insecurity_scores"),
         CheckConstraint("EXTRACT(DAY FROM year_month) = 1", name="chk_month_first_day"),
-        UniqueConstraint("year_month", "adm_code", name="uq_food_insecurity_scores")
+        Index(
+            'food_insecurity_scores_year_month_idx',
+            'year_month',
+            info={'skip_autogenerate': True}
+        ),
     )
 
-    id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
     score = Column(Integer, nullable=False)
@@ -66,11 +73,15 @@ class RiskFactor(Base):
 class RiskFactorScore(Base):
     __tablename__ = "risk_factor_scores"
     __table_args__ = (
+        PrimaryKeyConstraint("risk_factor_id", "adm_code", "year_month", name="pk_risk_factor_scores"),
         CheckConstraint("EXTRACT(DAY FROM year_month) = 1", name="chk_risk_factor_scores_month_first_day"),
-        UniqueConstraint("risk_factor_id", "year_month", "adm_code", name="uq_risk_factor_scores"),
+        Index(
+            'risk_factor_scores_year_month_idx',
+            'year_month',
+            info={'skip_autogenerate': True}
+        ),
     )
 
-    id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
     risk_factor_id = Column(Integer, ForeignKey("risk_factors.id"), nullable=False)
