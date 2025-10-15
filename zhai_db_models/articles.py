@@ -139,7 +139,7 @@ class ArticleLocationTags(Base):
         String,
         ForeignKey(
             "geo_taxonomy.adm_code",
-            name="fk_article_location_tags_geo_admin_code",
+            name="fk_article_location_tags_geotaxonomy_admin_code",
         ),
         nullable=False,
     )
