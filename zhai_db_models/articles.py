@@ -100,3 +100,41 @@ class ConceptUri(Base):
     def __repr__(self):
         return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
 
+
+class ArticleRiskFactorTags(Base):
+    __tablename__ = "article_risk_tags"
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_article_risk_factor_tags_article_uri",
+        ),
+        nullable=False,
+    )
+    risk_factor = Column(String, nullable=False)
+    strength = Column(Float)
+    tag_method_url = Column(String, nullable=False)
+
+
+class ArticleLocationTags(Base):
+    __tablename__ = "article_location_tags"
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_article_location_tags_article_uri",
+        ),
+        nullable=False,
+    )
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_article_location_tags_geo_admin_code",
+        ),
+        nullable=False,
+    )
+    strength = Column(Float)
+    tag_method_url = Column(String, nullable=False)
