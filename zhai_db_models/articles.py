@@ -104,6 +104,7 @@ class ConceptUri(Base):
 class ArticleRiskFactorTags(Base):
     __tablename__ = "article_risk_factor_tags"
 
+    id = Column(Integer, primary_key=True)
     article_uri = Column(
         String,
         ForeignKey(
@@ -127,6 +128,7 @@ class ArticleRiskFactorTags(Base):
 class ArticleLocationTags(Base):
     __tablename__ = "article_location_tags"
 
+    id = Column(Integer, primary_key=True)
     article_uri = Column(
         String,
         ForeignKey(
