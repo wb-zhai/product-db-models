@@ -25,8 +25,9 @@ class Geotaxonomy(Base):
             postgresql_using="gin",
             postgresql_ops={"adm_name": "gin_trgm_ops"},
         ),
+        UniqueConstraint("adm_code", name="unique_adm_code"),
         # comment the line below to generate migrations for this table
-        {"info": {"skip_autogenerate": True}},
+        # {"info": {"skip_autogenerate": True}},
     )
 
     id = Column(Integer, primary_key=True)
