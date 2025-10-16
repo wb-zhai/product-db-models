@@ -119,6 +119,7 @@ class ArticleRiskFactorTags(Base):
             name="fk_article_risk_factor_tags_article_uri",
         ),
         nullable=False,
+        primary_key=True,
     )
     risk_factor = Column(
         Integer,
@@ -127,9 +128,10 @@ class ArticleRiskFactorTags(Base):
             name="fk_article_risk_factor_tags_risk_factor_id",
         ),
         nullable=False,
+        primary_key=True,
     )
     strength = Column(Float)
-    tag_method_url = Column(String, nullable=False)
+    tag_method_url = Column(String, nullable=False, primary_key=True)
 
 
 class ArticleLocationTags(Base):
@@ -150,6 +152,7 @@ class ArticleLocationTags(Base):
             name="fk_article_location_tags_article_uri",
         ),
         nullable=False,
+        primary_key=True,
     )
     adm_code = Column(
         String,
@@ -158,6 +161,7 @@ class ArticleLocationTags(Base):
             name="fk_article_location_tags_adm_code",
         ),
         nullable=False,
+        primary_key=True,
     )
     strength = Column(Float)
-    tag_method_url = Column(String, nullable=False)
+    tag_method_url = Column(String, nullable=False, primary_key=True)
