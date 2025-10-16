@@ -38,21 +38,11 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['risk_factor'], ['risk_factors.id'], name='fk_article_risk_factor_tags_risk_factor_id'),
     sa.PrimaryKeyConstraint('article_uri', 'risk_factor', 'tag_method_url', name='pk_article_risk_factor_tags')
     )
-    op.alter_column('geo_taxonomy', 'id',
-               existing_type=sa.INTEGER(),
-               server_default=None,
-               existing_nullable=False,
-               autoincrement=True)
     op.create_unique_constraint('unique_adm_code', 'geo_taxonomy', ['adm_code'])
 
 
 def downgrade() -> None:
     """Downgrade schema."""
     op.drop_constraint('unique_adm_code', 'geo_taxonomy', type_='unique')
-    op.alter_column('geo_taxonomy', 'id',
-               existing_type=sa.INTEGER(),
-               server_default=sa.Identity(always=True, start=1, increment=1, minvalue=1, maxvalue=2147483647, cycle=False, cache=1),
-               existing_nullable=False,
-               autoincrement=True)
     op.drop_table('article_risk_factor_tags')
     op.drop_table('article_location_tags')
