@@ -102,7 +102,7 @@ class ConceptUri(Base):
 
 
 class ArticleRiskFactorTags(Base):
-    __tablename__ = "article_risk_tags"
+    __tablename__ = "article_risk_factor_tags"
 
     article_uri = Column(
         String,
