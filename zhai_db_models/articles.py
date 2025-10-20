@@ -122,7 +122,7 @@ class ArticleRiskFactorTags(Base):
         primary_key=True,
     )
     risk_factor = Column(
-        String,
+        Integer,
         ForeignKey(
             "risk_factors.id",
             name="fk_article_risk_factor_tags_risk_factor_id",
