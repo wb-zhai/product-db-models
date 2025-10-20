@@ -20,15 +20,21 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.alter_column('article_risk_factor_tags', 'risk_factor',
-               existing_type=sa.INTEGER(),
-               type_=sa.String(),
-               existing_nullable=False)
+    op.alter_column(
+        'article_risk_factor_tags',
+        'risk_factor',
+        existing_type=sa.INTEGER(),
+        type_=sa.String(),
+        existing_nullable=False,
+    )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.alter_column('article_risk_factor_tags', 'risk_factor',
-               existing_type=sa.String(),
-               type_=sa.INTEGER(),
-               existing_nullable=False)
+    op.alter_column(
+        'article_risk_factor_tags',
+        'risk_factor',
+        existing_type=sa.String(),
+        type_=sa.INTEGER(),
+        existing_nullable=False,
+    )
