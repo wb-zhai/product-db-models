@@ -57,8 +57,9 @@ class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
     uri = Column(String, primary_key=True)
-    language = Column(String, nullable=False)
+    source_uri = Column(String)
     cloud_uri = Column(String, unique=True, nullable=False)
+    language = Column(String, nullable=False)
     published_at = Column(DateTime, nullable=False)
     is_duplicate = Column(Boolean)
     article_type = Column(ENUM(
@@ -68,7 +69,6 @@ class ArticleDownload(Base):
     ))
     title = Column(String)
     body = Column(String)
-    source = Column(String)
 
     concept_uris = relationship(
         "ConceptUri",
