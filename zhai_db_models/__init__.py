@@ -1,6 +1,8 @@
 from .articles import (
     ArticleDownload,
+    ArticleLocationTags,
     ArticleQuery,
+    ArticleRiskFactorTags,
     ArticleUri,
     ConceptType,
     ConceptUri,

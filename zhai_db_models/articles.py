@@ -101,3 +101,68 @@ class ConceptUri(Base):
     def __repr__(self):
         return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
 
+
+class ArticleRiskFactorTags(Base):
+    __tablename__ = "article_risk_factor_tags"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "article_uri",
+            "risk_factor",
+            "tag_method_url",
+            name="pk_article_risk_factor_tags",
+        ),
+    )
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_article_risk_factor_tags_article_uri",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
+    risk_factor = Column(
+        Integer,
+        ForeignKey(
+            "risk_factors.id",
+            name="fk_article_risk_factor_tags_risk_factor_id",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
+    strength = Column(Float)
+    tag_method_url = Column(String, nullable=False, primary_key=True)
+
+
+class ArticleLocationTags(Base):
+    __tablename__ = "article_location_tags"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "article_uri",
+            "adm_code",
+            "tag_method_url",
+            name="pk_article_location_tags",
+        ),
+    )
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_article_location_tags_article_uri",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_article_location_tags_adm_code",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
+    strength = Column(Float)
+    tag_method_url = Column(String, nullable=False, primary_key=True)
