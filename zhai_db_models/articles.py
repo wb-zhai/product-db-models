@@ -38,7 +38,7 @@ class ArticleUri(Base):
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
     request_id = Column(UUID(as_uuid=True), nullable=False)
-    published_period = Column(DATERANGE, nullable=False)
+    published_period = Column(DATERANGE) # , nullable=False)
 
 
 article_concept_association = Table(
