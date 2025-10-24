@@ -2,6 +2,7 @@ import enum
 
 from geoalchemy2 import Geometry
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     Float,
@@ -48,14 +49,27 @@ article_concept_association = Table(
     Column("concept_uri", String, ForeignKey("concept_uris.concept_uri", name="fk_article_concept_association_concept_uri"), primary_key=True),
 )
 
+class ArticleType(enum.Enum):
+    pr = 'pr'
+    blog = 'blog'
+    news = 'news'
 
 class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
     uri = Column(String, primary_key=True)
-    language = Column(String, nullable=False)
+    source_uri = Column(String)
     cloud_uri = Column(String, unique=True, nullable=False)
+    language = Column(String, nullable=False)
     published_at = Column(DateTime, nullable=False)
+    is_duplicate = Column(Boolean)
+    article_type = Column(ENUM(
+        ArticleType,
+        name="article_enum",
+        create_type=True,
+    ))
+    title = Column(String)
+    body = Column(String)
 
     concept_uris = relationship(
         "ConceptUri",
