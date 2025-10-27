@@ -21,6 +21,8 @@ article_enum = postgresql.ENUM('pr', 'blog', 'news', name='article_enum')
 
 def upgrade() -> None:
     """Upgrade schema."""
+    article_enum.create(op.get_bind())
+
     op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
     op.add_column('article_downloads', sa.Column('source_uri', sa.String(), nullable=True))
     op.add_column('article_downloads', sa.Column('is_duplicate', sa.Boolean(), nullable=True))
@@ -37,3 +39,5 @@ def downgrade() -> None:
     op.drop_column('article_downloads', 'is_duplicate')
     op.drop_column('article_downloads', 'source_uri')
     op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
+
+    article_enum.create(op.get_bind())
