@@ -62,11 +62,14 @@ class ArticleDownload(Base):
     language = Column(String, nullable=False)
     published_at = Column(DateTime, nullable=False)
     is_duplicate = Column(Boolean, nullable=True, default=False)
-    article_type = Column(ENUM(
-        ArticleType,
-        name="article_enum",
-        create_type=True,
-    ))
+    article_type = Column(
+        ENUM(
+            ArticleType,
+            name="article_enum",
+            create_type=True,
+        ),
+        nullable=True,
+    )
     title = Column(String, nullable=True)
     body = Column(String, nullable=True)
 
