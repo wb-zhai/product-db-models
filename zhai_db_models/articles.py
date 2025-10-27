@@ -13,7 +13,7 @@ from sqlalchemy import (
     String,
     Table,
 )
-from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
+from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID, DATERANGE
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -39,6 +39,7 @@ class ArticleUri(Base):
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
     request_id = Column(UUID(as_uuid=True), nullable=False)
+    published_period = Column(DATERANGE) # , nullable=False)
 
 
 article_concept_association = Table(

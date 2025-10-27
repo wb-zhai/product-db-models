@@ -1,0 +1,38 @@
+"""add daterange to article URI
+
+Revision ID: da8738ea23c5
+Revises: 0bf057cec7fb
+Create Date: 2025-10-22 18:22:32.879101
+
+"""
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
+
+# revision identifiers, used by Alembic.
+revision: str = 'da8738ea23c5'
+down_revision: Union[str, Sequence[str], None] = '0bf057cec7fb'
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
+
+
+def upgrade() -> None:
+    """Upgrade schema."""
+    op.add_column(
+        'article_uris',
+        sa.Column(
+            'published_period',
+            postgresql.DATERANGE(),
+            nullable=True,
+        ),
+    )
+
+
+def downgrade() -> None:
+    """Downgrade schema."""
+    op.drop_column(
+        'article_uris',
+        'published_period',
+    )
