@@ -17,13 +17,14 @@ down_revision: Union[str, Sequence[str], None] = 'da8738ea23c5'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+article_enum = postgresql.ENUM('pr', 'blog', 'news', name='article_enum')
 
 def upgrade() -> None:
     """Upgrade schema."""
     op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
     op.add_column('article_downloads', sa.Column('source_uri', sa.String(), nullable=True))
     op.add_column('article_downloads', sa.Column('is_duplicate', sa.Boolean(), nullable=True))
-    op.add_column('article_downloads', sa.Column('article_type', postgresql.ENUM('pr', 'blog', 'news', name='article_enum'), nullable=True))
+    op.add_column('article_downloads', sa.Column('article_type', article_enum, nullable=True))
     op.add_column('article_downloads', sa.Column('title', sa.String(), nullable=True))
     op.add_column('article_downloads', sa.Column('body', sa.String(), nullable=True))
 
