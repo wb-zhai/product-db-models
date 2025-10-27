@@ -57,18 +57,18 @@ class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
     uri = Column(String, primary_key=True)
-    source_uri = Column(String)
+    source_uri = Column(String, nullable=True)
     cloud_uri = Column(String, unique=True, nullable=False)
     language = Column(String, nullable=False)
     published_at = Column(DateTime, nullable=False)
-    is_duplicate = Column(Boolean)
+    is_duplicate = Column(Boolean, nullable=True, default=False)
     article_type = Column(ENUM(
         ArticleType,
         name="article_enum",
         create_type=True,
     ))
-    title = Column(String)
-    body = Column(String)
+    title = Column(String, nullable=True)
+    body = Column(String, nullable=True)
 
     concept_uris = relationship(
         "ConceptUri",
