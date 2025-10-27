@@ -20,26 +20,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.create_table('food_insecurity_scores',
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('score', sa.Integer(), nullable=False),
-    sa.Column('adm_code', sa.String(), nullable=False),
-    sa.Column('year_month', sa.Date(), nullable=False),
-    sa.CheckConstraint('EXTRACT(DAY FROM year_month) = 1', name='chk_month_first_day'),
-    sa.PrimaryKeyConstraint('adm_code', 'year_month', name='pk_food_insecurity_scores')
-    )
-    op.create_table('risk_factor_scores',
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('risk_factor_id', sa.Integer(), nullable=False),
-    sa.Column('score', sa.Integer(), nullable=False),
-    sa.Column('adm_code', sa.String(), nullable=False),
-    sa.Column('year_month', sa.Date(), nullable=False),
-    sa.CheckConstraint('EXTRACT(DAY FROM year_month) = 1', name='chk_risk_factor_scores_month_first_day'),
-    sa.ForeignKeyConstraint(['risk_factor_id'], ['risk_factors.id'], ),
-    sa.PrimaryKeyConstraint('risk_factor_id', 'adm_code', 'year_month', name='pk_risk_factor_scores')
-    )
     op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
     op.add_column('article_downloads', sa.Column('source_uri', sa.String(), nullable=True))
     op.add_column('article_downloads', sa.Column('is_duplicate', sa.Boolean(), nullable=True))
@@ -56,5 +36,3 @@ def downgrade() -> None:
     op.drop_column('article_downloads', 'is_duplicate')
     op.drop_column('article_downloads', 'source_uri')
     op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
-    op.drop_table('risk_factor_scores')
-    op.drop_table('food_insecurity_scores')
