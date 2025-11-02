@@ -183,3 +183,24 @@ class ArticleLocationTags(Base):
     )
     strength = Column(Float)
     tag_method_url = Column(String, nullable=False, primary_key=True)
+
+class ArticleTagsTracker(Base):
+    __tablename__ = "article_tags_tracker"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "article_uri",
+            "tag_method_url",
+            name="pk_article_tags_tracker",
+        ),
+    )
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_article_tags_tracker_article_uri",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
+    tag_method_url = Column(String, nullable=False, primary_key=True)
