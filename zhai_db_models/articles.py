@@ -183,3 +183,24 @@ class ArticleLocationTags(Base):
     )
     strength = Column(Float)
     tag_method_url = Column(String, nullable=False, primary_key=True)
+
+class TaggedArticles(Base):
+    __tablename__ = "tagged_articles"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "article_uri",
+            "tag_method_url",
+            name="pk_tagged_articles",
+        ),
+    )
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_tagged_articles_article_uri",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
+    tag_method_url = Column(String, nullable=False, primary_key=True)
