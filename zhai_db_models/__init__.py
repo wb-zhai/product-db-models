@@ -6,6 +6,7 @@ from .articles import (
     ArticleUri,
     ConceptType,
     ConceptUri,
+    TaggedArticles,
     article_concept_association,
 )
 from .base import Base
