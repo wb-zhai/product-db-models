@@ -20,16 +20,32 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.create_table('tagged_article',
-    sa.Column('article_uri', sa.String(), nullable=False),
-    sa.Column('tag_method_url', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['article_uri'], ['article_downloads.uri'], name='fk_tagged_article_article_uri'),
-    sa.PrimaryKeyConstraint('article_uri', 'tag_method_url', name='pk_tagged_article')
+    op.create_table(
+        'tagged_articles',
+        sa.Column(
+            'article_uri',
+            sa.String(),
+            nullable=False,
+        ),
+        sa.Column(
+            'tag_method_url',
+            sa.String(),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(
+            ['article_uri'],
+            ['article_downloads.uri'],
+            name='fk_tagged_articles_article_uri',
+        ),
+        sa.PrimaryKeyConstraint(
+            'article_uri',
+            'tag_method_url',
+            name='pk_tagged_articles',
+        )
     )
-    # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_table('tagged_article')
-    # ### end Alembic commands ###
+    op.drop_table('tagged_articles')
+
