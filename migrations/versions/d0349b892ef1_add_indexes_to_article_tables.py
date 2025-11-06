@@ -20,7 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
+    # op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
     op.create_index(op.f('ix_article_downloads_article_type'), 'article_downloads', ['article_type'], unique=False)
     op.create_index(op.f('ix_article_downloads_language'), 'article_downloads', ['language'], unique=False)
     op.create_index(op.f('ix_article_location_tags_adm_code'), 'article_location_tags', ['adm_code'], unique=False)
@@ -47,4 +47,4 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_article_location_tags_adm_code'), table_name='article_location_tags')
     op.drop_index(op.f('ix_article_downloads_language'), table_name='article_downloads')
     op.drop_index(op.f('ix_article_downloads_article_type'), table_name='article_downloads')
-    op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
+    # op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
