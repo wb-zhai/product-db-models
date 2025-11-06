@@ -60,7 +60,7 @@ class ArticleDownload(Base):
     uri = Column(String, primary_key=True)
     source_uri = Column(String, nullable=True)
     cloud_uri = Column(String, unique=True, nullable=False)
-    language = Column(String, nullable=False)
+    language = Column(String, nullable=False, index=True)
     published_at = Column(DateTime, nullable=False)
     is_duplicate = Column(Boolean, nullable=True, default=False)
     article_type = Column(
@@ -70,6 +70,7 @@ class ArticleDownload(Base):
             create_type=True,
         ),
         nullable=True,
+        index=True,
     )
     title = Column(String, nullable=True)
     body = Column(String, nullable=True)
@@ -105,7 +106,15 @@ class ConceptUri(Base):
     )
 
     concept_uri = Column(String, primary_key=True)
-    concept_type = Column(ENUM(ConceptType, name="concept_enum", create_type=True), nullable=False)
+    concept_type = Column(
+        ENUM(
+            ConceptType,
+            name="concept_enum",
+            create_type=True,
+        ),
+        nullable=False,
+        index=True,
+    )
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
 
