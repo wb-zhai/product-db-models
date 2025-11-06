@@ -137,7 +137,7 @@ class ArticleRiskFactorTags(Base):
             name="fk_article_risk_factor_tags_article_uri",
         ),
         nullable=False,
-        primary_key=True,
+        index=True,
     )
     risk_factor = Column(
         Integer,
@@ -146,10 +146,10 @@ class ArticleRiskFactorTags(Base):
             name="fk_article_risk_factor_tags_risk_factor_id",
         ),
         nullable=False,
-        primary_key=True,
+        index=True,
     )
     strength = Column(Float)
-    tag_method_url = Column(String, nullable=False, primary_key=True)
+    tag_method_url = Column(String, nullable=False, index=True)
 
 
 class ArticleLocationTags(Base):
@@ -170,7 +170,7 @@ class ArticleLocationTags(Base):
             name="fk_article_location_tags_article_uri",
         ),
         nullable=False,
-        primary_key=True,
+        index=True,
     )
     adm_code = Column(
         String,
@@ -179,10 +179,10 @@ class ArticleLocationTags(Base):
             name="fk_article_location_tags_adm_code",
         ),
         nullable=False,
-        primary_key=True,
+        index=True,
     )
     strength = Column(Float)
-    tag_method_url = Column(String, nullable=False, primary_key=True)
+    tag_method_url = Column(String, nullable=False, index=True)
 
 class TaggedArticles(Base):
     __tablename__ = "tagged_articles"
@@ -201,6 +201,6 @@ class TaggedArticles(Base):
             name="fk_tagged_articles_article_uri",
         ),
         nullable=False,
-        primary_key=True,
+        index=True,
     )
-    tag_method_url = Column(String, nullable=False, primary_key=True)
+    tag_method_url = Column(String, nullable=False, index=True)
