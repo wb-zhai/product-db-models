@@ -130,6 +130,8 @@ class ArticleRiskFactorTags(Base):
         nullable=False,
         primary_key=True,
     )
+    span_start = Column(Integer)
+    span_end = Column(Integer)
     strength = Column(Float)
     tag_method_url = Column(String, nullable=False, primary_key=True)
 
@@ -163,5 +165,7 @@ class ArticleLocationTags(Base):
         nullable=False,
         primary_key=True,
     )
+    span_start = Column(Integer)
+    span_end = Column(Integer)
     strength = Column(Float)
     tag_method_url = Column(String, nullable=False, primary_key=True)
