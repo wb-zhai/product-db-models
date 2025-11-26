@@ -132,6 +132,7 @@ class ArticleRiskFactorTags(Base):
     )
     span_start = Column(Integer)
     span_end = Column(Integer)
+    sentence_id = Column(String)
     strength = Column(Float)
     tag_method_url = Column(String, nullable=False, primary_key=True)
 
@@ -167,5 +168,6 @@ class ArticleLocationTags(Base):
     )
     span_start = Column(Integer)
     span_end = Column(Integer)
+    sentence = Column(Integer)
     strength = Column(Float)
     tag_method_url = Column(String, nullable=False, primary_key=True)
