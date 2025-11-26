@@ -2,6 +2,7 @@ import enum
 
 from geoalchemy2 import Geometry
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     Float,
@@ -12,7 +13,7 @@ from sqlalchemy import (
     String,
     Table,
 )
-from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
+from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID, DATERANGE
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -38,6 +39,7 @@ class ArticleUri(Base):
     page_id = Column(Integer, nullable=False)
     queried_at = Column(DateTime, nullable=False)
     request_id = Column(UUID(as_uuid=True), nullable=False)
+    published_period = Column(DATERANGE) # , nullable=False)
 
 
 article_concept_association = Table(
@@ -47,14 +49,30 @@ article_concept_association = Table(
     Column("concept_uri", String, ForeignKey("concept_uris.concept_uri", name="fk_article_concept_association_concept_uri"), primary_key=True),
 )
 
+class ArticleType(enum.Enum):
+    pr = 'pr'
+    blog = 'blog'
+    news = 'news'
 
 class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
     uri = Column(String, primary_key=True)
-    language = Column(String, nullable=False)
+    source_uri = Column(String, nullable=True)
     cloud_uri = Column(String, unique=True, nullable=False)
+    language = Column(String, nullable=False)
     published_at = Column(DateTime, nullable=False)
+    is_duplicate = Column(Boolean, nullable=True, default=False)
+    article_type = Column(
+        ENUM(
+            ArticleType,
+            name="article_enum",
+            create_type=True,
+        ),
+        nullable=True,
+    )
+    title = Column(String, nullable=True)
+    body = Column(String, nullable=True)
 
     concept_uris = relationship(
         "ConceptUri",
@@ -170,4 +188,25 @@ class ArticleLocationTags(Base):
     span_end = Column(Integer)
     sentence = Column(Integer)
     strength = Column(Float)
+    tag_method_url = Column(String, nullable=False, primary_key=True)
+
+class TaggedArticles(Base):
+    __tablename__ = "tagged_articles"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "article_uri",
+            "tag_method_url",
+            name="pk_tagged_articles",
+        ),
+    )
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_tagged_articles_article_uri",
+        ),
+        nullable=False,
+        primary_key=True,
+    )
     tag_method_url = Column(String, nullable=False, primary_key=True)
