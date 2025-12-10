@@ -83,3 +83,19 @@ class GeotaxonomyConceptUriDirectMatch(Base):
     uri = Column(String)
     country_uri = Column(String)
     meta = Column(JSONB)
+
+
+class GeotaxonomyPolygon(Base):
+    # this is a read-only view
+    __tablename__ = "shared.geotaxonomy_polygons_fixed"
+    __table_args__ = (
+        {"info": {"skip_autogenerate": True}},
+    )
+
+    id = Column(Integer, primary_key=True)
+    code = Column(String)
+    data_source = Column(String)
+    adm0_code_iso_2 = Column(String)
+    adm0_code_iso_3 = Column(String)
+    adm_level = Column(Integer)
+    geometry = Column(Geometry)
