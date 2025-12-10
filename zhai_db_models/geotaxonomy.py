@@ -87,9 +87,12 @@ class GeotaxonomyConceptUriDirectMatch(Base):
 
 class GeotaxonomyPolygon(Base):
     # this is a read-only view
-    __tablename__ = "shared.geotaxonomy_polygons_fixed"
+    __tablename__ = "geotaxonomy_polygons_fixed"
     __table_args__ = (
-        {"info": {"skip_autogenerate": True}},
+        {
+            "schema": "shared",
+            "info": {"skip_autogenerate": True}
+        },
     )
 
     id = Column(Integer, primary_key=True)
