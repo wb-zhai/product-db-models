@@ -102,3 +102,4 @@ class GeotaxonomyPolygon(Base):
     adm0_code_iso_3 = Column(String)
     adm_level = Column(Integer)
     geometry = Column(Geometry)
+    is_preferred = Column(Boolean)
