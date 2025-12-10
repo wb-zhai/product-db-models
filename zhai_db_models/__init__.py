@@ -20,5 +20,6 @@ from .geotaxonomy import (
     Base,
     Geotaxonomy,
     GeotaxonomyConceptUriDirectMatch,
+    GeotaxonomyPolygon,
     GeotaxonomyShape,
 )
