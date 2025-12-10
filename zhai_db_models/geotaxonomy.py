@@ -96,7 +96,7 @@ class GeotaxonomyPolygon(Base):
     )
 
     id = Column(Integer, primary_key=True)
-    code = Column(String)
+    adm_code = Column(String)
     data_source = Column(String)
     adm0_code_iso_2 = Column(String)
     adm0_code_iso_3 = Column(String)
