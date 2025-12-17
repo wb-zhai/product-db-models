@@ -180,7 +180,8 @@ class AbstractArticleTags(Base):
         index=True,
     )
     tag_method_id = Column(
-        String, ForeignKey(
+        Integer,
+        ForeignKey(
             "tag_method_urls.method_id",
             name="fk_%(table_name)s_method_id",
         ),
