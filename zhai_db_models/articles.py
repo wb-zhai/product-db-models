@@ -214,7 +214,7 @@ class ArticleRiskFactorTags(AbstractArticleTags):
         index=True,
     )
 
-class ArticleLocationTags(Base):
+class ArticleLocationTags(AbstractArticleTags):
     __tablename__ = "article_location_tags"
     __table_args__ = (
         PrimaryKeyConstraint(
