@@ -25,7 +25,7 @@ def upgrade() -> None:
                     sa.Column('method_url', sa.String(), nullable=False, unique=True),
                     sa.PrimaryKeyConstraint('method_id')
                     )
-    op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
+    # op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
 
     op.add_column('article_location_tags', sa.Column('tag_method_id', sa.Integer(), nullable=False))
     op.alter_column('article_location_tags', 'article_position_group',
@@ -93,5 +93,5 @@ def downgrade() -> None:
     op.drop_column('article_location_tags', 'tag_method_id')
 
     # Final Table Drops
-    op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
+    # op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
     op.drop_table('tag_method_urls')
