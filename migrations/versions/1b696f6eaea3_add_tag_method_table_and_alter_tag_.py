@@ -26,7 +26,8 @@ def upgrade() -> None:
                     sa.PrimaryKeyConstraint('method_id')
                     )
     op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])
-    op.add_column('article_location_tags', sa.Column('tag_method_id', sa.String(), nullable=False))
+
+    op.add_column('article_location_tags', sa.Column('tag_method_id', sa.Integer(), nullable=False))
     op.alter_column('article_location_tags', 'article_position_group',
                     existing_type=sa.VARCHAR(),
                     nullable=False)
@@ -35,10 +36,11 @@ def upgrade() -> None:
                     nullable=False)
     op.drop_index(op.f('ix_article_location_tags_tag_method_url'), table_name='article_location_tags')
     op.create_index(op.f('ix_article_location_tags_tag_method_id'), 'article_location_tags', ['tag_method_id'], unique=False)
-    op.create_foreign_key('fk_%(table_name)s_method_id', 'article_location_tags', 'tag_method_urls', ['tag_method_id'], ['method_id'])
+    op.create_foreign_key('fk_article_location_tags_method_id', 'article_location_tags', 'tag_method_urls', ['tag_method_id'], ['method_id'])
     op.drop_column('article_location_tags', 'strength')
     op.drop_column('article_location_tags', 'tag_method_url')
-    op.add_column('article_risk_factor_tags', sa.Column('tag_method_id', sa.String(), nullable=False))
+
+    op.add_column('article_risk_factor_tags', sa.Column('tag_method_id', sa.Integer(), nullable=False))
     op.alter_column('article_risk_factor_tags', 'article_position_group',
                     existing_type=sa.VARCHAR(),
                     nullable=False)
@@ -47,9 +49,10 @@ def upgrade() -> None:
                     nullable=False)
     op.drop_index(op.f('ix_article_risk_factor_tags_tag_method_url'), table_name='article_risk_factor_tags')
     op.create_index(op.f('ix_article_risk_factor_tags_tag_method_id'), 'article_risk_factor_tags', ['tag_method_id'], unique=False)
-    op.create_foreign_key('fk_%(table_name)s_method_id', 'article_risk_factor_tags', 'tag_method_urls', ['tag_method_id'], ['method_id'])
+    op.create_foreign_key('fk_article_risk_factor_tags_method_id', 'article_risk_factor_tags', 'tag_method_urls', ['tag_method_id'], ['method_id'])
     op.drop_column('article_risk_factor_tags', 'strength')
     op.drop_column('article_risk_factor_tags', 'tag_method_url')
+
     op.add_column('tagged_articles', sa.Column('tag_method_id', sa.Integer(), nullable=False))
     op.add_column('tagged_articles', sa.Column('tagged_at', sa.DateTime(), nullable=True))
     op.drop_index(op.f('ix_tagged_articles_tag_method_url'), table_name='tagged_articles')
@@ -57,38 +60,38 @@ def upgrade() -> None:
     op.create_foreign_key('fk_tagged_articles_method_id', 'tagged_articles', 'tag_method_urls', ['tag_method_id'], ['method_id'])
     op.drop_column('tagged_articles', 'tag_method_url')
 
-
 def downgrade() -> None:
     """Downgrade schema."""
+    # Tagged Articles Cleanup
     op.add_column('tagged_articles', sa.Column('tag_method_url', sa.VARCHAR(), autoincrement=False, nullable=False))
     op.drop_constraint('fk_tagged_articles_method_id', 'tagged_articles', type_='foreignkey')
     op.drop_index(op.f('ix_tagged_articles_tag_method_id'), table_name='tagged_articles')
     op.create_index(op.f('ix_tagged_articles_tag_method_url'), 'tagged_articles', ['tag_method_url'], unique=False)
     op.drop_column('tagged_articles', 'tagged_at')
     op.drop_column('tagged_articles', 'tag_method_id')
+
+    # Article Risk Factor Tags Cleanup
     op.add_column('article_risk_factor_tags', sa.Column('tag_method_url', sa.VARCHAR(), autoincrement=False, nullable=False))
     op.add_column('article_risk_factor_tags', sa.Column('strength', sa.DOUBLE_PRECISION(precision=53), autoincrement=False, nullable=True))
-    op.drop_constraint('fk_%(table_name)s_method_id', 'article_risk_factor_tags', type_='foreignkey')
+    op.drop_constraint('fk_article_risk_factor_tags_method_id', 'article_risk_factor_tags', type_='foreignkey')
+
     op.drop_index(op.f('ix_article_risk_factor_tags_tag_method_id'), table_name='article_risk_factor_tags')
     op.create_index(op.f('ix_article_risk_factor_tags_tag_method_url'), 'article_risk_factor_tags', ['tag_method_url'], unique=False)
-    op.alter_column('article_risk_factor_tags', 'article_position_start',
-                    existing_type=sa.INTEGER(),
-                    nullable=True)
-    op.alter_column('article_risk_factor_tags', 'article_position_group',
-                    existing_type=sa.VARCHAR(),
-                    nullable=True)
+    op.alter_column('article_risk_factor_tags', 'article_position_start', existing_type=sa.INTEGER(), nullable=True)
+    op.alter_column('article_risk_factor_tags', 'article_position_group', existing_type=sa.VARCHAR(), nullable=True)
     op.drop_column('article_risk_factor_tags', 'tag_method_id')
+
+    # Article Location Tags Cleanup
     op.add_column('article_location_tags', sa.Column('tag_method_url', sa.VARCHAR(), autoincrement=False, nullable=False))
     op.add_column('article_location_tags', sa.Column('strength', sa.DOUBLE_PRECISION(precision=53), autoincrement=False, nullable=True))
-    op.drop_constraint('fk_%(table_name)s_method_id', 'article_location_tags', type_='foreignkey')
+    op.drop_constraint('fk_article_location_tags_method_id', 'article_location_tags', type_='foreignkey')
+
     op.drop_index(op.f('ix_article_location_tags_tag_method_id'), table_name='article_location_tags')
     op.create_index(op.f('ix_article_location_tags_tag_method_url'), 'article_location_tags', ['tag_method_url'], unique=False)
-    op.alter_column('article_location_tags', 'article_position_start',
-                    existing_type=sa.INTEGER(),
-                    nullable=True)
-    op.alter_column('article_location_tags', 'article_position_group',
-                    existing_type=sa.VARCHAR(),
-                    nullable=True)
+    op.alter_column('article_location_tags', 'article_position_start', existing_type=sa.INTEGER(), nullable=True)
+    op.alter_column('article_location_tags', 'article_position_group', existing_type=sa.VARCHAR(), nullable=True)
     op.drop_column('article_location_tags', 'tag_method_id')
+
+    # Final Table Drops
     op.drop_constraint('fk_article_concept_association_concept_uri', 'article_concept_association', type_='foreignkey')
     op.drop_table('tag_method_urls')
