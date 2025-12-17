@@ -22,7 +22,7 @@ def upgrade() -> None:
     """Upgrade schema."""
     op.create_table('tag_method_urls',
                     sa.Column('method_id', sa.Integer(), nullable=False),
-                    sa.Column('method_url', sa.String(), nullable=False),
+                    sa.Column('method_url', sa.String(), nullable=False, unique=True),
                     sa.PrimaryKeyConstraint('method_id')
                     )
     op.create_foreign_key('fk_article_concept_association_concept_uri', 'article_concept_association', 'concept_uris', ['concept_uri'], ['concept_uri'])

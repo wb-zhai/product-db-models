@@ -133,7 +133,7 @@ class TaggedMethods(Base):
     __tablename__ = "tag_method_urls"
 
     method_id = Column(Integer, primary_key=True)
-    method_url = Column(String, nullable=False)
+    method_url = Column(String, nullable=False, unique=True)
 
 
 class TaggedArticles(Base):
