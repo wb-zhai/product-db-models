@@ -157,11 +157,17 @@ class ArticleRiskFactorTags(Base):
         nullable=False,
         index=True,
     )
+    tag_method_id = Column(
+        String, ForeignKey(
+            "tag_method_urls.method_id",
+            name="fk_article_risk_factor_method_id",
+        ),
+        nullable=False,
+        index=True,
+    )
     article_position_group = Column(String)
     article_position_start = Column(Integer)
     article_position_end = Column(Integer)
-    strength = Column(Float)
-    tag_method_url = Column(String, nullable=False, index=True)
 
 
 class ArticleLocationTags(Base):
@@ -193,11 +199,17 @@ class ArticleLocationTags(Base):
         nullable=False,
         index=True,
     )
+    tag_method_id = Column(
+        String, ForeignKey(
+            "tag_method_urls.method_id",
+            name="fk_article_location_tags_method_id",
+        ),
+        nullable=False,
+        index=True,
+    )
     article_position_group = Column(String)
     article_position_start = Column(Integer)
     article_position_end = Column(Integer)
-    strength = Column(Float)
-    tag_method_url = Column(String, nullable=False, index=True)
 
 class TaggedArticles(Base):
     __tablename__ = "tagged_articles"
@@ -218,4 +230,18 @@ class TaggedArticles(Base):
         nullable=False,
         index=True,
     )
-    tag_method_url = Column(String, nullable=False, index=True)
+    tag_method_id = Column(
+        String, ForeignKey(
+            "tag_method_urls.method_id",
+            name="fk_tagged_articles_method_id",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+
+class TaggedMethods(Base):
+    __tablename__ = "tag_method_urls"
+
+    method_id = Column(Integer, primary_key=True)
+    method_url = Column(String, nullable=False)
