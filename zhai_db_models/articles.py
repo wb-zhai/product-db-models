@@ -2,6 +2,7 @@ import enum
 
 from geoalchemy2 import Geometry
 from sqlalchemy import (
+    func,
     Boolean,
     Column,
     DateTime,
@@ -128,83 +129,19 @@ class ConceptUri(Base):
         return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
 
 
-class ArticleRiskFactorTags(Base):
-    __tablename__ = "article_risk_factor_tags"
-    __table_args__ = (
-        PrimaryKeyConstraint(
-            "article_uri",
-            "risk_factor",
-            "tag_method_url",
-            name="pk_article_risk_factor_tags",
-        ),
-    )
+class TaggedMethods(Base):
+    __tablename__ = "tag_method_urls"
 
-    article_uri = Column(
-        String,
-        ForeignKey(
-            "article_downloads.uri",
-            name="fk_article_risk_factor_tags_article_uri",
-        ),
-        nullable=False,
-        index=True,
-    )
-    risk_factor = Column(
-        Integer,
-        ForeignKey(
-            "risk_factors.id",
-            name="fk_article_risk_factor_tags_risk_factor_id",
-        ),
-        nullable=False,
-        index=True,
-    )
-    article_position_group = Column(String)
-    article_position_start = Column(Integer)
-    article_position_end = Column(Integer)
-    strength = Column(Float)
-    tag_method_url = Column(String, nullable=False, index=True)
+    method_id = Column(Integer, primary_key=True)
+    method_url = Column(String, nullable=False, unique=True)
 
-
-class ArticleLocationTags(Base):
-    __tablename__ = "article_location_tags"
-    __table_args__ = (
-        PrimaryKeyConstraint(
-            "article_uri",
-            "adm_code",
-            "tag_method_url",
-            name="pk_article_location_tags",
-        ),
-    )
-
-    article_uri = Column(
-        String,
-        ForeignKey(
-            "article_downloads.uri",
-            name="fk_article_location_tags_article_uri",
-        ),
-        nullable=False,
-        index=True,
-    )
-    adm_code = Column(
-        String,
-        ForeignKey(
-            "geo_taxonomy.adm_code",
-            name="fk_article_location_tags_adm_code",
-        ),
-        nullable=False,
-        index=True,
-    )
-    article_position_group = Column(String)
-    article_position_start = Column(Integer)
-    article_position_end = Column(Integer)
-    strength = Column(Float)
-    tag_method_url = Column(String, nullable=False, index=True)
 
 class TaggedArticles(Base):
     __tablename__ = "tagged_articles"
     __table_args__ = (
         PrimaryKeyConstraint(
+            "tag_method_id",
             "article_uri",
-            "tag_method_url",
             name="pk_tagged_articles",
         ),
     )
@@ -218,4 +155,84 @@ class TaggedArticles(Base):
         nullable=False,
         index=True,
     )
-    tag_method_url = Column(String, nullable=False, index=True)
+    tag_method_id = Column(
+        Integer,
+        ForeignKey(
+            "tag_method_urls.method_id",
+            name="fk_tagged_articles_method_id",
+        ),
+        nullable=False,
+        index=True,
+    )
+    tagged_at = Column(DateTime, default=func.now())
+
+
+class AbstractArticleTags(Base):
+    __abstract__ = True
+
+    article_uri = Column(
+        String,
+        ForeignKey(
+            "article_downloads.uri",
+            name="fk_%(table_name)s_article_uri",
+        ),
+        nullable=False,
+        index=True,
+    )
+    tag_method_id = Column(
+        String, ForeignKey(
+            "tag_method_urls.method_id",
+            name="fk_%(table_name)s_method_id",
+        ),
+        nullable=False,
+        index=True,
+    )
+    article_position_group = Column(String, nullable=False)
+    article_position_start = Column(Integer, nullable=False)
+    article_position_end = Column(Integer)
+
+class ArticleRiskFactorTags(AbstractArticleTags):
+    __tablename__ = "article_risk_factor_tags"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "tag_method_id",
+            "risk_factor",
+            "article_uri",
+            "article_position_group",
+            "article_position_start",
+            name="pk_article_risk_factor_tags",
+        ),
+    )
+
+    risk_factor = Column(
+        Integer,
+        ForeignKey(
+            "risk_factors.id",
+            name="fk_article_risk_factor_tags_risk_factor_id",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+class ArticleLocationTags(AbstractArticleTags):
+    __tablename__ = "article_location_tags"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "tag_method_id",
+            "adm_code",
+            "article_uri",
+            "article_position_group",
+            "article_position_start",
+            name="pk_article_location_tags",
+        ),
+    )
+
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_article_location_tags_adm_code",
+        ),
+        nullable=False,
+        index=True,
+    )
