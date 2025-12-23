@@ -46,6 +46,12 @@ class FoodInsecurityScore(Base):
             'year_month',
             info={'skip_autogenerate': True}
         ),
+        Index(
+            'idx_food_insecurity_scores_year_month_adm_code_score',
+            'year_month', 'adm_code',
+            postgresql_include=['score'],
+            info={'skip_autogenerate': True}
+        )
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
