@@ -15,6 +15,7 @@ from .food_security import (
     FoodInsecurityScore,
     FoodSecurityDummy,
     RiskFactor,
+    RiskFactorConcepts,
     RiskFactorScore,
 )
 from .geotaxonomy import (
