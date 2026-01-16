@@ -81,7 +81,7 @@ class RiskFactor(Base):
     scores = relationship("RiskFactorScore", backref="risk_factors")
 
 
-class RiskFactorConcepts(Base):
+class RiskFactorConcept(Base):
     __tablename__ = "risk_factor_concepts"
     __table_args__ = (
         Index(
