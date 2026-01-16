@@ -81,6 +81,45 @@ class RiskFactor(Base):
     scores = relationship("RiskFactorScore", backref="risk_factors")
 
 
+class RiskFactorConcepts(Base):
+    __tablename__ = "risk_factor_concepts"
+    __table_args__ = (
+        Index(
+            "ix_risk_factor_concepts_concept_uri",
+            "concept_uri",
+        ),
+    )
+
+    risk_factor_id = Column(
+        Integer,
+        ForeignKey(
+            "risk_factors.id",
+            name="fk_risk_factor_concepts_risk_factor_id",
+        ),
+        primary_key=True,
+    )
+    concept_uri = Column(
+        String,
+        ForeignKey(
+            "concept_uris.concept_uri",
+            name="fk_risk_factor_concepts_risk_concept_uri",
+        ),
+        primary_key=True,
+    )
+    source = Column(String, nullable=False)
+    version = Column(String, nullable=False)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        onupdate=func.now(),
+        server_default=func.now(),
+    )
+
+
 class RiskFactorScore(Base):
     __tablename__ = "risk_factor_scores"
     __table_args__ = (
