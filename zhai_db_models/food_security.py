@@ -98,14 +98,7 @@ class RiskFactorConcept(Base):
         ),
         primary_key=True,
     )
-    concept_uri = Column(
-        String,
-        ForeignKey(
-            "concept_uris.concept_uri",
-            name="fk_risk_factor_concepts_risk_concept_uri",
-        ),
-        primary_key=True,
-    )
+    concept_uri = Column(String, primary_key=True)
     source = Column(String, primary_key=True)
     version = Column(String, primary_key=True)
 
