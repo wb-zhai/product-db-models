@@ -106,8 +106,8 @@ class RiskFactorConcept(Base):
         ),
         primary_key=True,
     )
-    source = Column(String, nullable=False)
-    version = Column(String, nullable=False)
+    source = Column(String, primary_key=True)
+    version = Column(String, primary_key=True)
 
     created_at = Column(
         DateTime(timezone=True),
