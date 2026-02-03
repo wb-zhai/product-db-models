@@ -233,6 +233,7 @@ class ArticleLocationTags(AbstractArticleTags):
         ForeignKey(
             "geo_taxonomy.adm_code",
             name="fk_article_location_tags_adm_code",
+            onupdate="CASCADE",
         ),
         nullable=False,
         index=True,
