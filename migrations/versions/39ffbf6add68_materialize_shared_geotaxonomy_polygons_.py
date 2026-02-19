@@ -114,9 +114,9 @@ WHERE
 def upgrade() -> None:
     """Upgrade schema."""
     op.execute(CREATE_MATERIALIZED_VIEW_SQL)
-    op.execute("""CREATE INDEX idx_geotaxonomy_polygons_fixed_adm_code_preferred
+    op.execute("""CREATE INDEX CONCURRENTLY idx_geotaxonomy_polygons_fixed_adm_code_preferred
         ON shared.geotaxonomy_polygons_fixed (adm_code, is_preferred);""")
-    op.execute("""CREATE INDEX idx_geotaxonomy_polygons_fixed_geometry
+    op.execute("""CREATE INDEX CONCURRENTLY idx_geotaxonomy_polygons_fixed_geometry
         ON shared.geotaxonomy_polygons_fixed USING GIST (geometry);""")
 
 def downgrade() -> None:
