@@ -2,7 +2,6 @@ import enum
 
 from geoalchemy2 import Geometry
 from sqlalchemy import (
-    func,
     Boolean,
     Column,
     DateTime,
@@ -13,8 +12,9 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,
     Table,
+    func,
 )
-from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID, DATERANGE
+from sqlalchemy.dialects.postgresql import DATERANGE, ENUM, JSONB, UUID
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -226,6 +226,7 @@ class ArticleLocationTags(AbstractArticleTags):
             "article_position_start",
             name="pk_article_location_tags",
         ),
+        Index("ix_article_location_tags_adm_code_article_uri", "adm_code", "article_uri"),
     )
 
     adm_code = Column(
