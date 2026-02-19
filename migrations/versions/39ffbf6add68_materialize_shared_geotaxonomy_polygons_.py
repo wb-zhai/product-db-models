@@ -18,7 +18,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 CREATE_MATERIALIZED_VIEW_SQL = """
-CREATE MATERIALIZED VIEW IF NOT EXISTS shared.geotaxonomy_polygons_fixed AS
+CREATE MATERIALIZED VIEW shared.geotaxonomy_polygons_fixed AS
 WITH geob_iso_coded AS (
   -- patch shapeID with shapeISO[-shapeID] as adm_code for geob-preferred countries
   SELECT
@@ -71,6 +71,11 @@ crosses_antimeridian AS (
       COALESCE(geometry_fixed, geometry),
       st_setsrid(ST_MAKELINE(ST_Point(180, -90), ST_Point(180, 90)), 4326)
     ) geometry,
+	CASE
+		WHEN ST_XMax(ST_Envelope(geometry)) - ST_XMin(ST_Envelope(geometry)) > 180
+		THEN ST_ShiftLongitude(ST_Envelope(geometry))
+		ELSE ST_Envelope(geometry)
+	END bbox,
     is_preferred
   FROM
     adm_code_patched
@@ -90,6 +95,11 @@ SELECT
   adm_level,
   adm_code,
   COALESCE(geometry_fixed, geometry) geometry,
+  CASE
+	WHEN ST_XMax(ST_Envelope(geometry)) - ST_XMin(ST_Envelope(geometry)) > 180
+	THEN ST_ShiftLongitude(ST_Envelope(geometry))
+	ELSE ST_Envelope(geometry)
+  END bbox,
   is_preferred
 FROM
   adm_code_patched
