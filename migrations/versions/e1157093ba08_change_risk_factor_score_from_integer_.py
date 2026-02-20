@@ -19,23 +19,25 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.alter_column(
-        "risk_factor_scores",
-        "score",
-        existing_type=sa.Integer(),
-        type_=sa.Numeric(precision=8, scale=4),
-        existing_nullable=False,
-        postgresql_using="score::numeric(8,4)",
-    )
+    pass
+    # op.alter_column(
+    #     "risk_factor_scores",
+    #     "score",
+    #     existing_type=sa.Integer(),
+    #     type_=sa.Numeric(precision=8, scale=4),
+    #     existing_nullable=False,
+    #     postgresql_using="score::numeric(8,4)",
+    # )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.alter_column(
-        "risk_factor_scores",
-        "score",
-        existing_type=sa.Numeric(precision=8, scale=4),
-        type_=sa.Integer(),
-        existing_nullable=False,
-        postgresql_using="score::integer",
-    )
+    pass
+    # op.alter_column(
+    #     "risk_factor_scores",
+    #     "score",
+    #     existing_type=sa.Numeric(precision=8, scale=4),
+    #     type_=sa.Integer(),
+    #     existing_nullable=False,
+    #     postgresql_using="score::integer",
+    # )
