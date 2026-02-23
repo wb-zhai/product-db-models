@@ -38,13 +38,6 @@ def upgrade() -> None:
         ) PARTITION BY RANGE (year_month);
         """
     )
-    op.execute(
-        f"""
-        CREATE INDEX idx_food_insecurity_scores_year_month_adm_code_score
-        ON {PARENT_TABLE} (year_month, adm_code)
-        INCLUDE (score);
-        """
-    )
     # start date for partitioning based on prior knowledge of available data
     op.execute(
         f"""
