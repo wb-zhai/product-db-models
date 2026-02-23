@@ -20,23 +20,17 @@ from .base import Base
 class FoodInsecurityScore(Base):
     __tablename__ = "food_insecurity_scores"
     __table_args__ = (
-        {"info": {"skip_autogenerate": True}},
         PrimaryKeyConstraint(
             "adm_code", "year_month", name="pk_food_insecurity_scores"
         ),
         CheckConstraint("EXTRACT(DAY FROM year_month) = 1", name="chk_month_first_day"),
         Index(
-            "food_insecurity_scores_year_month_idx",
-            "year_month",
-            info={"skip_autogenerate": True},
-        ),
-        Index(
             "idx_food_insecurity_scores_year_month_adm_code_score",
             "year_month",
             "adm_code",
             postgresql_include=["score"],
-            info={"skip_autogenerate": True},
         ),
+        {"info": {"skip_autogenerate": True}},
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -122,7 +116,21 @@ class RiskFactorScore(Base):
     updated_at = Column(
         DateTime(timezone=True), onupdate=func.now(), server_default=func.now()
     )
-    risk_factor_id = Column(Integer, ForeignKey("risk_factors.id"), nullable=False)
+    risk_factor_id = Column(
+        Integer,
+        ForeignKey(
+            "risk_factors.id",
+            name="fk_risk_factor_scores_risk_factor_id",
+        ),
+        nullable=False
+    )
     score = Column(Integer, nullable=False)
-    adm_code = Column(String, nullable=False)
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_risk_factor_scores_adm_code",
+        ),
+        nullable=False,
+    )
     year_month = Column(Date, nullable=False)
