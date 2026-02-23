@@ -99,7 +99,7 @@ class RiskFactorScore(Base):
     __tablename__ = "risk_factor_scores"
     __table_args__ = (
         PrimaryKeyConstraint(
-            "risk_factor_id", "adm_code", "year_month", name="pk_risk_factor_scores"
+            "adm_code", "year_month", "risk_factor_id", name="pk_risk_factor_scores"
         ),
         CheckConstraint(
             "EXTRACT(DAY FROM year_month) = 1",
@@ -113,9 +113,6 @@ class RiskFactorScore(Base):
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(
-        DateTime(timezone=True), onupdate=func.now(), server_default=func.now()
-    )
     risk_factor_id = Column(
         Integer,
         ForeignKey(
