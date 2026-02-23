@@ -20,7 +20,6 @@ from .base import Base
 class FoodInsecurityScore(Base):
     __tablename__ = "food_insecurity_scores"
     __table_args__ = (
-        {"info": {"skip_autogenerate": True}},
         PrimaryKeyConstraint(
             "adm_code", "year_month", name="pk_food_insecurity_scores"
         ),
@@ -114,6 +113,14 @@ class RiskFactorScore(Base):
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    risk_factor_id = Column(
+        Integer,
+        ForeignKey(
+            "risk_factors.id",
+            name="fk_risk_factor_scores_risk_factor_id",
+        ),
+        nullable=False
+    )
     risk_factor_id = Column(
         Integer,
         ForeignKey(
