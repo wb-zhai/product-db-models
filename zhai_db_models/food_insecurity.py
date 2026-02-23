@@ -20,6 +20,7 @@ from .base import Base
 class FoodInsecurityScore(Base):
     __tablename__ = "food_insecurity_scores"
     __table_args__ = (
+        {"info": {"skip_autogenerate": True}},
         PrimaryKeyConstraint(
             "adm_code", "year_month", name="pk_food_insecurity_scores"
         ),
