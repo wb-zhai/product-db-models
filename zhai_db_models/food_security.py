@@ -56,11 +56,15 @@ class FoodInsecurityScore(Base):
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(
-        DateTime(timezone=True), onupdate=func.now(), server_default=func.now()
-    )
     score = Column(Integer, nullable=False)
-    adm_code = Column(String, nullable=False)
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_food_insecurity_scores_adm_code",
+        ),
+        nullable=False,
+    )
     year_month = Column(Date, nullable=False)
 
 
