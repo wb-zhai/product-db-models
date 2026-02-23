@@ -121,14 +121,6 @@ class RiskFactorScore(Base):
         ),
         nullable=False
     )
-    risk_factor_id = Column(
-        Integer,
-        ForeignKey(
-            "risk_factors.id",
-            name="fk_risk_factor_scores_risk_factor_id",
-        ),
-        nullable=False
-    )
     score = Column(Integer, nullable=False)
     adm_code = Column(
         String,
