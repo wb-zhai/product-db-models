@@ -13,7 +13,6 @@ from .articles import (
 from .base import Base
 from .food_security import (
     FoodInsecurityScore,
-    FoodSecurityDummy,
     RiskFactor,
     RiskFactorConcept,
     RiskFactorScore,
