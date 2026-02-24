@@ -11,9 +11,8 @@ from .articles import (
     article_concept_association,
 )
 from .base import Base
-from .food_security import (
+from .food_insecurity import (
     FoodInsecurityScore,
-    FoodSecurityDummy,
     RiskFactor,
     RiskFactorConcept,
     RiskFactorScore,
