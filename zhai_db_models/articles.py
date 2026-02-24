@@ -59,6 +59,7 @@ class ArticleDownload(Base):
     __tablename__ = "article_downloads"
 
     uri = Column(String, primary_key=True)
+    url = Column(String, nullable=True)
     source_uri = Column(String, nullable=True)
     cloud_uri = Column(String, unique=True, nullable=False)
     language = Column(String, nullable=False, index=True)
