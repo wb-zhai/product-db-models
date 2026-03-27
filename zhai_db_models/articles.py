@@ -46,7 +46,7 @@ class ArticleUri(Base):
 article_concept_association = Table(
     "article_concept_association",
     Base.metadata,
-    Column("article_uri", String, ForeignKey("article_downloads.uri", name="fk_article_concept_association_article_uri"), primary_key=True),
+    Column("article_uri", String, ForeignKey("articles.article_downloads.uri", name="fk_article_concept_association_article_uri"), primary_key=True),
     Column("concept_uri", String, ForeignKey("concept_uris.concept_uri", name="fk_article_concept_association_concept_uri"), primary_key=True),
 )
 
@@ -57,6 +57,9 @@ class ArticleType(enum.Enum):
 
 class ArticleDownload(Base):
     __tablename__ = "article_downloads"
+    __table_args__ = {
+        "schema": "articles",
+    }
 
     uri = Column(String, primary_key=True)
     url = Column(String, nullable=True)
@@ -150,7 +153,7 @@ class TaggedArticles(Base):
     article_uri = Column(
         String,
         ForeignKey(
-            "article_downloads.uri",
+            "articles.article_downloads.uri",
             name="fk_tagged_articles_article_uri",
         ),
         nullable=False,
@@ -174,7 +177,7 @@ class AbstractArticleTags(Base):
     article_uri = Column(
         String,
         ForeignKey(
-            "article_downloads.uri",
+            "articles.article_downloads.uri",
             name="fk_%(table_name)s_article_uri",
         ),
         nullable=False,
