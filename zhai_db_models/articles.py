@@ -72,6 +72,7 @@ class ArticleDownload(Base):
         ENUM(
             ArticleType,
             name="article_enum",
+            schema="articles",
             create_type=True,
         ),
         nullable=True,
