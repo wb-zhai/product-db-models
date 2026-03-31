@@ -87,6 +87,18 @@ class ArticleDownload(Base):
         return f"<ArticleDownload(uri='{self.uri}')>"
 
 
+class ArticleDownloadRef(Base):
+    __tablename__ = "article_downloads_ref"
+
+    uri = Column(
+        String,
+        primary_key=True,
+    )
+    published_at = Column(DateTime, nullable=False)
+
+
+
+
 #
 # Event Registry concept data model. See:
 # https://github.com/EventRegistry/event-registry-python/wiki/Data-models#concept-data-model

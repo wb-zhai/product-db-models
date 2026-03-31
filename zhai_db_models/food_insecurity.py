@@ -110,6 +110,7 @@ class RiskFactorScore(Base):
             "year_month",
             info={"skip_autogenerate": True},
         ),
+        {"info": {"skip_autogenerate": True}},
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
