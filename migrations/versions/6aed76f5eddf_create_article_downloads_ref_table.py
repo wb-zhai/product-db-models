@@ -105,10 +105,6 @@ def downgrade() -> None:
             ADD CONSTRAINT fk_{table}_article_uri
             FOREIGN KEY (article_uri) REFERENCES public.article_downloads(uri)
         """)
-        # TODO:
-        # op.execute(f"""
-        #    ALTER TABLE {table} VALIDATE CONSTRAINT fk_{table}_article_uri;
-        # """)
     op.drop_table('articles.article_downloads')
     op.execute("DROP TRIGGER article_downloads_ref_sync ON article_downloads")
     op.execute("DROP FUNCTION sync_article_downloads_ref()")
