@@ -49,6 +49,12 @@ def upgrade() -> None:
         sa.Column('published_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('uri')
     )
+    # The following assumes partitioned articles.article_downloads is already backfilled
+    op.execute("""
+        INSERT INTO article_downloads_ref (uri, published_at)
+        SELECT uri, published_at
+        FROM articles.article_downloads
+    """)
     op.execute("""
        CREATE OR REPLACE FUNCTION sync_article_downloads_ref()
         RETURNS TRIGGER AS $$
@@ -71,9 +77,38 @@ def upgrade() -> None:
         AFTER INSERT OR DELETE ON article_downloads
         FOR EACH ROW EXECUTE FUNCTION sync_article_downloads_ref();
     """)
+    for table in ["article_location_tags", "article_risk_factor_tags"]:
+         op.execute(f"""
+            ALTER TABLE {table}
+            DROP CONSTRAINT fk_{table}_article_uri
+        """)
+         op.execute(f"""
+            ALTER TABLE {table}
+            ADD CONSTRAINT fk_{table}_article_uri
+            FOREIGN KEY (article_uri) REFERENCES article_downloads_ref(uri) NOT VALID
+        """)
+        # TODO:
+        # op.execute(f"""
+        #    ALTER TABLE {table} VALIDATE CONSTRAINT fk_{table}_article_uri;
+        # """)
+
 
 def downgrade() -> None:
     """Downgrade schema."""
+    for table in ["article_location_tags", "article_risk_factor_tags"]:
+         op.execute(f"""
+            ALTER TABLE {table}
+            DROP CONSTRAINT fk_{table}_article_uri
+        """)
+         op.execute(f"""
+            ALTER TABLE {table}
+            ADD CONSTRAINT fk_{table}_article_uri
+            FOREIGN KEY (article_uri) REFERENCES public.article_downloads(uri)
+        """)
+        # TODO:
+        # op.execute(f"""
+        #    ALTER TABLE {table} VALIDATE CONSTRAINT fk_{table}_article_uri;
+        # """)
     op.drop_table('articles.article_downloads')
     op.execute("DROP TRIGGER article_downloads_ref_sync ON article_downloads")
     op.execute("DROP FUNCTION sync_article_downloads_ref()")
