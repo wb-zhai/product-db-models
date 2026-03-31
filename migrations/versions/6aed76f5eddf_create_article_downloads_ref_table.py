@@ -19,6 +19,31 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS articles.article_downloads (
+            LIKE public.article_downloads INCLUDING DEFAULTS INCLUDING CONSTRAINTS
+        ) PARTITION BY RANGE (published_at);
+
+        ALTER TABLE articles.article_downloads ADD PRIMARY KEY (uri, published_at);
+
+        WITH bounds AS (
+            SELECT
+                MIN(published_at::date)::text AS start_partition,
+                (
+                    EXTRACT(YEAR FROM age(MAX(published_at::date), MIN(published_at::date))) * 12 +
+                    EXTRACT(MONTH FROM age(MAX(published_at::date), MIN(published_at::date))) + 3
+                )::int AS premake
+            FROM public.article_downloads
+        )
+        SELECT partman.create_parent(
+            p_parent_table    => 'articles.article_downloads',
+            p_control         => 'published_at',
+            p_interval        => '1 month',
+            p_start_partition => bounds.start_partition,
+            p_premake         => bounds.premake
+        )
+        FROM bounds;
+    """)
     op.create_table('article_downloads_ref',
         sa.Column('uri', sa.String(), nullable=False),
         sa.Column('published_at', sa.DateTime(), nullable=False),
@@ -41,7 +66,6 @@ def upgrade() -> None:
         END;
         $$ LANGUAGE plpgsql;
     """)
-    # assumes partitioned articles.article_downloads already exists
     op.execute("""
         CREATE TRIGGER article_downloads_ref_sync
         AFTER INSERT OR DELETE ON article_downloads
@@ -50,6 +74,7 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.drop_table('articles.article_downloads')
     op.execute("DROP TRIGGER article_downloads_ref_sync ON article_downloads")
     op.execute("DROP FUNCTION sync_article_downloads_ref()")
     op.drop_table('article_downloads_ref')
