@@ -16,6 +16,12 @@ down_revision: Union[str, Sequence[str], None] = 'bc41f02a2341'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+TABLES_TO_REPOINT = [
+    "article_location_tags",
+    "article_risk_factor_tags",
+    "article_concept_association",
+    "tagged_articles"
+]
 
 def upgrade() -> None:
     """Upgrade schema."""
@@ -74,10 +80,10 @@ def upgrade() -> None:
     """)
     op.execute("""
         CREATE TRIGGER article_downloads_ref_sync
-        AFTER INSERT OR DELETE ON article_downloads
+        BEFORE INSERT OR DELETE ON articles.article_downloads
         FOR EACH ROW EXECUTE FUNCTION sync_article_downloads_ref();
     """)
-    for table in ["article_location_tags", "article_risk_factor_tags"]:
+    for table in TABLES_TO_REPOINT:
          op.execute(f"""
             ALTER TABLE {table}
             DROP CONSTRAINT fk_{table}_article_uri
@@ -95,7 +101,7 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
-    for table in ["article_location_tags", "article_risk_factor_tags"]:
+    for table in TABLES_TO_REPOINT:
          op.execute(f"""
             ALTER TABLE {table}
             DROP CONSTRAINT fk_{table}_article_uri
@@ -106,6 +112,6 @@ def downgrade() -> None:
             FOREIGN KEY (article_uri) REFERENCES public.article_downloads(uri)
         """)
     op.drop_table('articles.article_downloads')
-    op.execute("DROP TRIGGER article_downloads_ref_sync ON article_downloads")
+    op.execute("DROP TRIGGER article_downloads_ref_sync ON articles.article_downloads")
     op.execute("DROP FUNCTION sync_article_downloads_ref()")
     op.drop_table('article_downloads_ref')
