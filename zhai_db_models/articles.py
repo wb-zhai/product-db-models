@@ -46,7 +46,7 @@ class ArticleUri(Base):
 article_concept_association = Table(
     "article_concept_association",
     Base.metadata,
-    Column("article_uri", String, ForeignKey("article_downloads.uri", name="fk_article_concept_association_article_uri"), primary_key=True),
+    Column("article_uri", String, ForeignKey("article_downloads_ref.uri", name="fk_article_concept_association_article_uri"), primary_key=True),
     Column("concept_uri", String, ForeignKey("concept_uris.concept_uri", name="fk_article_concept_association_concept_uri"), primary_key=True),
 )
 
@@ -56,7 +56,11 @@ class ArticleType(enum.Enum):
     news = 'news'
 
 class ArticleDownload(Base):
-    __tablename__ = "article_downloads"
+    __tablename__ = "articles.article_downloads"
+    __table_args__ = (
+        {"info": {"skip_autogenerate": True}},
+    )
+
 
     uri = Column(String, primary_key=True)
     url = Column(String, nullable=True)
@@ -77,14 +81,26 @@ class ArticleDownload(Base):
     title = Column(String, nullable=True)
     body = Column(String, nullable=True)
 
+    def __repr__(self):
+        return f"<ArticleDownload(uri='{self.uri}')>"
+
+
+class ArticleDownloadRef(Base):
+    __tablename__ = "article_downloads_ref"
+
+    uri = Column(
+        String,
+        primary_key=True,
+    )
+    published_at = Column(DateTime, nullable=False)
+
     concept_uris = relationship(
         "ConceptUri",
         secondary=article_concept_association,
-        back_populates="article_downloads",
+        back_populates="article_downloads_ref",
     )
 
-    def __repr__(self):
-        return f"<ArticleDownload(uri='{self.uri}')>"
+
 
 
 #
@@ -150,7 +166,7 @@ class TaggedArticles(Base):
     article_uri = Column(
         String,
         ForeignKey(
-            "article_downloads.uri",
+            "article_downloads_ref.uri",
             name="fk_tagged_articles_article_uri",
         ),
         nullable=False,
@@ -174,7 +190,7 @@ class AbstractArticleTags(Base):
     article_uri = Column(
         String,
         ForeignKey(
-            "article_downloads.uri",
+            "article_downloads_ref.uri",
             name="fk_%(table_name)s_article_uri",
         ),
         nullable=False,
