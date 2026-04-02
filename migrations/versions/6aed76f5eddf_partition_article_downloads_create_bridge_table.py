@@ -1,4 +1,5 @@
-"""Create article_downloads_ref table
+"""Partition article_downloads table
+and repoint foreign key constraints to new bridge table article_downloads_ref
 
 Revision ID: 6aed76f5eddf
 Revises: bc41f02a2341
@@ -21,6 +22,11 @@ TABLES_TO_REPOINT = [
     "article_risk_factor_tags",
     "article_concept_association",
     "tagged_articles"
+]
+ARTICLE_DOWNLOADS_COLUMNS_TO_INDEX = [
+    "article_type",
+    "language",
+    "published_at",
 ]
 
 def upgrade() -> None:
@@ -83,6 +89,12 @@ def upgrade() -> None:
         BEFORE INSERT OR DELETE ON articles.article_downloads
         FOR EACH ROW EXECUTE FUNCTION sync_article_downloads_ref();
     """)
+    for col in ARTICLE_DOWNLOADS_COLUMNS_TO_INDEX:
+        on_col = f"({col}::DATE)" if col == "published_at" else col
+        op.execute(f"""
+            CREATE INDEX ix_arts_article_downloads_{col}
+            ON articles.article_downloads ({on_col});
+        """)
     for table in TABLES_TO_REPOINT:
          op.execute(f"""
             ALTER TABLE {table}
@@ -110,6 +122,10 @@ def downgrade() -> None:
             ALTER TABLE {table}
             ADD CONSTRAINT fk_{table}_article_uri
             FOREIGN KEY (article_uri) REFERENCES public.article_downloads(uri)
+        """)
+    for col in ARTICLE_DOWNLOADS_COLUMNS_TO_INDEX:
+        op.execute(f"""
+            DROP INDEX IF EXISTS ix_arts_article_downloads_{col};
         """)
     op.drop_table('articles.article_downloads')
     op.execute("DROP TRIGGER article_downloads_ref_sync ON articles.article_downloads")
