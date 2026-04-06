@@ -56,9 +56,12 @@ class ArticleType(enum.Enum):
     news = 'news'
 
 class ArticleDownload(Base):
-    __tablename__ = "articles.article_downloads"
+    __tablename__ = "article_downloads"
     __table_args__ = (
-        {"info": {"skip_autogenerate": True}},
+        {
+            "schema": "articles",
+            "info": {"skip_autogenerate": True}
+        },
     )
 
 
@@ -136,8 +139,8 @@ class ConceptUri(Base):
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
 
-    article_downloads = relationship(
-        "ArticleDownload",
+    article_download_refs = relationship(
+        "ArticleDownloadRef",
         secondary=article_concept_association,
         back_populates="concept_uris",
     )
