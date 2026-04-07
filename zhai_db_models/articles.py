@@ -139,7 +139,7 @@ class ConceptUri(Base):
     geo_names_id = Column(Integer, nullable=True)
     geom = Column(Geometry("POINT", srid=4326), nullable=True)
 
-    article_download_refs = relationship(
+    article_downloads_ref = relationship(
         "ArticleDownloadRef",
         secondary=article_concept_association,
         back_populates="concept_uris",
