@@ -66,12 +66,12 @@ def upgrade() -> None:
         RETURNS TRIGGER AS $$
         BEGIN
             IF TG_OP = 'INSERT' THEN
-                INSERT INTO article_downloads_ref (id)
-                VALUES (NEW.id)
+                INSERT INTO article_downloads_ref (uri, published_at)
+                VALUES (NEW.uri, NEW.published_at)
                 ON CONFLICT DO NOTHING;
 
             ELSIF TG_OP = 'DELETE' THEN
-                DELETE FROM article_downloads_ref WHERE id = OLD.id;
+                DELETE FROM article_downloads_ref WHERE uri = OLD.uri;
             END IF;
 
             RETURN NEW;
