@@ -100,7 +100,7 @@ class ArticleDownloadRef(Base):
     concept_uris = relationship(
         "ConceptUri",
         secondary=article_concept_association,
-        back_populates="article_downloads_ref",
+        back_populates="article_download_refs",
     )
 
 
