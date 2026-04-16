@@ -25,8 +25,9 @@ from .geotaxonomy import (
     GeotaxonomyShape,
 )
 from .food_insecurity import (
-    FoodInsecurityScore
-    RiskFactor
-    RiskFactorConcept
-    RiskFactorScore
+    KGAbstractArticleTags,
+    KGArticleLocationTags,
+    KGArticleRiskFactorTags,
+    KGRiskFactor,
+    KGTaggedArticles,
 )
