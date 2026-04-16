@@ -1,21 +1,14 @@
-import enum
-
-from geoalchemy2 import Geometry
 from sqlalchemy import (
-    Boolean,
     Column,
     DateTime,
-    Float,
     ForeignKey,
     Index,
     Integer,
     PrimaryKeyConstraint,
     String,
-    Table,
     func,
 )
-from sqlalchemy.dialects.postgresql import DATERANGE, ENUM, JSONB, UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declared_attr
 
 from .base import Base
 
