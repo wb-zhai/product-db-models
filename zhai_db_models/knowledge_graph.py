@@ -46,7 +46,7 @@ class KGTaggedArticles(Base):
     article_uri = Column(
         String,
         ForeignKey(
-            "public.article_downloads_ref.uri",
+            "article_downloads_ref.uri",
             name="fk_tagged_articles_article_uri",
         ),
         nullable=False,
@@ -55,7 +55,7 @@ class KGTaggedArticles(Base):
     tag_method_id = Column(
         Integer,
         ForeignKey(
-            "public.tag_method_urls.method_id",
+            "tag_method_urls.method_id",
             name="fk_tagged_articles_method_id",
         ),
         nullable=False,
@@ -72,7 +72,7 @@ class KGAbstractArticleTags(Base):
         return Column(
             String,
             ForeignKey(
-                "public.article_downloads.article_uri",
+                "article_downloads_ref.uri",
                 name=f"fk_{cls.__tablename__}_article_uri",
             ),
             nullable=False,
@@ -84,7 +84,7 @@ class KGAbstractArticleTags(Base):
         return Column(
             Integer,
             ForeignKey(
-                "public.tag_method_urls.method_id",
+                "tag_method_urls.method_id",
                 name=f"fk_{cls.__tablename__}_method_id",
             ),
             nullable=False,
@@ -145,7 +145,7 @@ class KGArticleLocationTags(KGAbstractArticleTags):
     adm_code = Column(
         String,
         ForeignKey(
-            "public.geo_taxonomy.adm_code",
+            "geo_taxonomy.adm_code",
             name="fk_article_location_tags_adm_code",
             onupdate="CASCADE",
         ),
