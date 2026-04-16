@@ -24,3 +24,10 @@ from .geotaxonomy import (
     GeotaxonomyPolygon,
     GeotaxonomyShape,
 )
+from .knowledge_graph import (
+    KGAbstractArticleTags,
+    KGArticleLocationTags,
+    KGArticleRiskFactorTags,
+    KGRiskFactor,
+    KGTaggedArticles,
+)
