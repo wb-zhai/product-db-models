@@ -24,7 +24,7 @@ from .geotaxonomy import (
     GeotaxonomyPolygon,
     GeotaxonomyShape,
 )
-from .food_insecurity import (
+from .knowledge_graph import (
     KGAbstractArticleTags,
     KGArticleLocationTags,
     KGArticleRiskFactorTags,
