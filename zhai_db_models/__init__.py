@@ -24,3 +24,9 @@ from .geotaxonomy import (
     GeotaxonomyPolygon,
     GeotaxonomyShape,
 )
+from .food_insecurity import (
+    FoodInsecurityScore
+    RiskFactor
+    RiskFactorConcept
+    RiskFactorScore
+)
