@@ -85,19 +85,5 @@ class ModelingRegressionEvaluation(Base):
             create_type=True,
         ),
         nullable=False,
-        index=True,
-    )
-    score = Column(
-        Float,
-        Computed(
-            text("""
-            CASE
-              WHEN metric = 'abs_error'     THEN ABS(y_pred - y_true)
-              WHEN metric = 'squared_error' THEN POWER(y_pred - y_true, 2)
-            ELSE NULL
-            END
-            """),
-            persisted=True,
-        )
     )
     score = Column(Float, nullable=False)
