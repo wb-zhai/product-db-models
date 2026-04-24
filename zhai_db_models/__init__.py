@@ -24,6 +24,9 @@ from .geotaxonomy import (
     GeotaxonomyPolygon,
     GeotaxonomyShape,
 )
+from .modeling import (
+    ModelingRegressionEvaluation,
+)
 from .knowledge_graph import (
     KGAbstractArticleTags,
     KGArticleLocationTags,
