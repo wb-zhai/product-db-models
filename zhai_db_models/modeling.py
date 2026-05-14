@@ -87,3 +87,20 @@ class ModelingRegressionEvaluation(Base):
         nullable=False,
     )
     score = Column(Float, nullable=False)
+
+class ModelingFrontendResults(Base):
+    __tablename__ = "modeling_regression_evaluation"
+
+    date = Column(DateTime(timezone=True), nullable=False)
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_modeling_regression_evaluation_adm_code",
+            onupdate="CASCADE",
+        ),
+        nullable=False,
+    )
+    feature_type = Column(String)
+    feature_name = Column(String)
+    feature_value = Column(Float)
