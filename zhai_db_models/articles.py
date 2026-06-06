@@ -71,6 +71,7 @@ class ArticleDownload(Base):
     cloud_uri = Column(String, unique=True, nullable=False)
     language = Column(String, nullable=False, index=True)
     published_at = Column(DateTime, nullable=False)
+    collected_at = Column(DateTime, default=func.now())
     is_duplicate = Column(Boolean, nullable=True, default=False)
     article_type = Column(
         ENUM(
