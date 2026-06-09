@@ -28,7 +28,7 @@ class KGRiskFactor(Base):
         server_default=func.now(),
     )
     name = Column(String, nullable=False, unique=True)
-    version = Column(Integer, nullable=False)
+    version = Column(String, nullable=False)
 
 class KGTaggedArticles(Base):
     __tablename__ = "tagged_articles"
