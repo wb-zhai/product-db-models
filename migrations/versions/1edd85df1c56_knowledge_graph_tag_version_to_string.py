@@ -1,8 +1,8 @@
 """Knowledge graph tag version to string
 
-Revision ID: 861486277d21
+Revision ID: 1edd85df1c56
 Revises: b3cb18b66522
-Create Date: 2026-06-09 11:36:17.944306
+Create Date: 2026-06-09 11:47:44.854337
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '861486277d21'
+revision: str = '1edd85df1c56'
 down_revision: Union[str, Sequence[str], None] = 'b3cb18b66522'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
