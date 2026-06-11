@@ -95,7 +95,7 @@ class DataSourceType(enum.Enum):
     inference = "inference"
 
 class ModelingFrontendResults(Base):
-    __tablename__ = "modeling_regression_evaluation"
+    __tablename__ = "modeling_frontend_results"
     __table_args__ = (
         PrimaryKeyConstraint(
             "date",
@@ -105,6 +105,9 @@ class ModelingFrontendResults(Base):
             "version",
             name="pk_modeling_frontend_results",
         ),
+        {
+            "schema": "modeling",
+        },
     )
 
     date = Column(
@@ -115,7 +118,7 @@ class ModelingFrontendResults(Base):
         String,
         ForeignKey(
             "geo_taxonomy.adm_code",
-            name="fk_modeling_regression_evaluation_adm_code",
+            name="fk_modeling_frontend_results_adm_code",
             onupdate="CASCADE",
         ),
         nullable=False,
