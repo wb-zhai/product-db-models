@@ -96,6 +96,16 @@ class DataSourceType(enum.Enum):
 
 class ModelingFrontendResults(Base):
     __tablename__ = "modeling_regression_evaluation"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "date",
+            "adm_code",
+            "feature_type",
+            "feature_name",
+            "version",
+            name="pk_modeling_frontend_results",
+        ),
+    )
 
     date = Column(
         DateTime(timezone=True),
