@@ -1,5 +1,6 @@
 from sqlalchemy import (
     REAL,
+    Boolean,
     CheckConstraint,
     Column,
     Date,
@@ -10,6 +11,7 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,
     UniqueConstraint,
+    false,
     func,
 )
 from sqlalchemy.orm import relationship
@@ -30,7 +32,10 @@ class FoodInsecurityScore(Base):
             "adm_code",
             postgresql_include=["score"],
         ),
-        {"info": {"skip_autogenerate": True}},
+        {
+            "schema": "scores",
+            "info": {"skip_autogenerate": True}
+        },
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -44,6 +49,7 @@ class FoodInsecurityScore(Base):
         nullable=False,
     )
     year_month = Column(Date, nullable=False)
+    is_ground_truth = Column(Boolean, nullable=False, server_default=false())
 
 
 class RiskFactor(Base):

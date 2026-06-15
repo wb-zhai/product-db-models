@@ -1,6 +1,7 @@
 import enum
 
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     Float,
@@ -87,3 +88,61 @@ class ModelingRegressionEvaluation(Base):
         nullable=False,
     )
     score = Column(Float, nullable=False)
+
+class DataSourceType(enum.Enum):
+    dataset = "dataset"
+    modeling = "modeling"
+    inference = "inference"
+
+class ModelingFrontendResults(Base):
+    __tablename__ = "modeling_frontend_results"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "date",
+            "adm_code",
+            "feature_type",
+            "feature_name",
+            "version",
+            name="pk_modeling_frontend_results",
+        ),
+        {
+            "schema": "modeling",
+        },
+    )
+
+    date = Column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_modeling_frontend_results_adm_code",
+            onupdate="CASCADE",
+        ),
+        nullable=False,
+    )
+
+    version = Column(
+        UUID(as_uuid=True),
+        nullable=False,
+        index=True,
+    )
+    data_source = Column(
+        ENUM(
+            DataSourceType,
+            name="data_source_enum",
+            create_type=True,
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    feature_type = Column(
+        String,
+        nullable=False,
+        index=True,
+    )
+    feature_name = Column(String)
+    feature_value = Column(Float)
