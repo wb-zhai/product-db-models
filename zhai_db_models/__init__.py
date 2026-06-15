@@ -25,6 +25,7 @@ from .geotaxonomy import (
     GeotaxonomyShape,
 )
 from .modeling import (
+    ModelingFrontendResults,
     ModelingRegressionEvaluation,
 )
 from .knowledge_graph import (
