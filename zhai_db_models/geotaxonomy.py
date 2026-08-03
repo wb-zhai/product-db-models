@@ -103,3 +103,34 @@ class GeotaxonomyPolygon(Base):
     adm_level = Column(Integer)
     geometry = Column(Geometry)
     is_preferred = Column(Boolean)
+
+
+class GeoNameType(enum.Enum):
+    display = "display"
+    search = "search"
+    wikipedia = "wikipedia"
+
+class GeotaxonomyNames:
+    __tablename__ = "geo_taxonomy_names"
+
+    adm_code = Column(
+        String,
+        nullable=False,
+    )
+    name_type = Column(
+        ENUM(
+            GeoNameType,
+            name="split_enum",
+            create_type=True,
+        ),
+        nullable=False,
+    )
+    adm_name = Column(
+        String,
+        nullable=False,
+    )
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
