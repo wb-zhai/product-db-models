@@ -1,3 +1,5 @@
+import enum
+
 from geoalchemy2.types import Geometry
 from sqlalchemy import (
     Boolean,
@@ -5,13 +7,15 @@ from sqlalchemy import (
     Column,
     Computed,
     DateTime,
+    ForeignKey,
     Index,
     Integer,
+    PrimaryKeyConstraint,
     String,
     UniqueConstraint,
     func,
 )
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import ENUM, JSONB
 
 from .base import Base
 
@@ -110,17 +114,49 @@ class GeoNameType(enum.Enum):
     search = "search"
     wikipedia = "wikipedia"
 
-class GeotaxonomyNames:
+class GeotaxonomyNames(Base):
     __tablename__ = "geo_taxonomy_names"
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "adm_code",
+            "name_type",
+            "adm_name",
+            name="pk_geo_taxonomy_names",
+        ),
+        Index(
+            "idx_geo_taxonomy_names_adm_code",
+            "adm_code",
+        ),
+        Index(
+            "idx_geo_taxonomy_names_type_name",
+            "name_type",
+            "adm_name",
+        ),
+        Index(
+            "idx_geo_taxonomy_names_name_trgm",
+            "adm_name",
+            postgresql_using="gin",
+            postgresql_ops={
+                "adm_name":
+                "gin_trgm_ops",
+            },
+        ),
+    )
 
     adm_code = Column(
         String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_geo_taxonomy_names_adm_code",
+            ondelete="CASCADE",
+            onupdate="CASCADE",
+        ),
         nullable=False,
     )
     name_type = Column(
         ENUM(
             GeoNameType,
-            name="split_enum",
+            name="geo_name_type",
             create_type=True,
         ),
         nullable=False,
@@ -131,6 +167,6 @@ class GeotaxonomyNames:
     )
     created_at = Column(
         DateTime(timezone=True),
-        nullable=False,
         server_default=func.now(),
+        nullable=False,
     )
