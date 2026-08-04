@@ -7,6 +7,7 @@ from sqlalchemy import (
     Column,
     Computed,
     DateTime,
+    Float,
     ForeignKey,
     Index,
     Integer,
@@ -15,7 +16,7 @@ from sqlalchemy import (
     UniqueConstraint,
     func,
 )
-from sqlalchemy.dialects.postgresql import ENUM, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, ENUM
 
 from .base import Base
 
@@ -75,18 +76,35 @@ class GeotaxonomyShape(Base):
 class GeotaxonomyConceptUriDirectMatch(Base):
     __tablename__ = "geo_taxonomy_concept_uris_direct_match"
     __table_args__ = (
-        UniqueConstraint("code", "uri", name="unique_code_uri_direct_match"),
+        PrimaryKeyConstraint(
+            "adm_code",
+            "uri",
+            name="pk_geo_taxonomy_concept_uris_direct_match",
+        ),
     )
 
-    id = Column(Integer, primary_key=True)
+    adm_code = Column(
+        String,
+        ForeignKey(
+            "geo_taxonomy.adm_code",
+            name="fk_geo_taxonomy_concept_uris_direct_match_adm_code",
+            ondelete="CASCADE",
+            onupdate="CASCADE",
+        ),
+        nullable=False,
+    )
+    uri = Column(String, nullable=False)
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    code = Column(String)
-    name = Column(String)
-    uri = Column(String)
-    country_uri = Column(String)
-    meta = Column(JSONB)
+    title = Column(String)
+    wikidata_qid = Column(String)
+    page_id = Column(Integer)
+    rank = Column(Integer)
+    confidence = Column(Float)
+    resolution_method = Column(String)
+    tie_reason = Column(String)
+    wikidata_p31 = Column(ARRAY(String))
 
 
 class GeotaxonomyPolygon(Base):
