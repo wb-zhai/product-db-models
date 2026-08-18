@@ -19,6 +19,7 @@ from .food_insecurity import (
 )
 from .geotaxonomy import (
     Base,
+    GeoNameType,
     Geotaxonomy,
     GeotaxonomyConceptUriDirectMatch,
     GeotaxonomyNames,
