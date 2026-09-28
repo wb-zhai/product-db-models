@@ -7,6 +7,7 @@ Create Date: 2026-09-28 11:05:41.860488
 """
 from typing import Sequence, Union
 
+import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
@@ -15,37 +16,63 @@ down_revision: Union[str, Sequence[str], None] = '71f465f58478'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+SCHEMA = "modeling"
 TABLE = "modeling.modeling_frontend_results"
-BACKUP = "modeling.modeling_frontend_results_unpartitioned"
+BACKUP_NAME = "modeling_frontend_results_unpartitioned"
+BACKUP = f"modeling.{BACKUP_NAME}"
 DEFAULT_PARTITION = "modeling.modeling_frontend_results_default"
 
-# Constraint/index names are unique per schema, not per table --
-# ALTER TABLE ... RENAME leaves these attached to the renamed-away
-# table under their original names, which then collide with the new
-# table's CREATE TABLE. Give the old copies a suffixed name instead
-# of leaving them as-is.
-_RENAMES = {
-    "pk_modeling_frontend_results": "pk_modeling_frontend_results_unpartitioned",
-    "fk_modeling_frontend_results_adm_code": "fk_modeling_frontend_results_adm_code_unpartitioned",
-}
-_INDEX_RENAMES = {
-    "ix_modeling_frontend_results_version": "ix_modeling_frontend_results_version_unpartitioned",
-    "ix_modeling_frontend_results_data_source": "ix_modeling_frontend_results_data_source_unpartitioned",
-    "ix_modeling_frontend_results_feature_type": "ix_modeling_frontend_results_feature_type_unpartitioned",
-}
+# Explicit, ORM-declared names -- reliable, unlike the auto-generated
+# secondary index names below.
+_PK_RENAME = ("pk_modeling_frontend_results", "pk_modeling_frontend_results_unpartitioned")
+_FK_RENAME = (
+    "fk_modeling_frontend_results_adm_code",
+    "fk_modeling_frontend_results_adm_code_unpartitioned",
+)
+
+
+def _secondary_index_names(conn, table_name: str) -> list[str]:
+    """Whatever non-PK indexes currently exist on `table_name`.
+
+    zhai_db_models declares exactly three (version, data_source,
+    feature_type -- Column(index=True), no explicit Index()), but
+    their auto-generated names don't reliably match SQLAlchemy's
+    documented ix_<table>_<column> convention against every live DB
+    (confirmed the hard way -- a first attempt at this migration
+    guessed wrong). Discovering them by querying pg_indexes instead
+    of hardcoding names avoids repeating that mistake.
+    """
+    rows = conn.execute(
+        sa.text("""
+            SELECT indexname FROM pg_indexes
+            WHERE schemaname = :schema AND tablename = :table
+              AND indexname NOT LIKE 'pk\\_%' ESCAPE '\\'
+        """),
+        {"schema": SCHEMA, "table": table_name},
+    )
+    return [row[0] for row in rows]
 
 
 def upgrade() -> None:
     """Upgrade schema."""
+    conn = op.get_bind()
+
     # Postgres has no ALTER TABLE ... PARTITION BY -- an existing table
     # can't be converted in place. Rename it out of the way instead of
     # dropping it, so whatever rows it currently holds aren't silently
     # lost; left for manual cleanup once confirmed unneeded.
-    op.execute(f"ALTER TABLE {TABLE} RENAME TO modeling_frontend_results_unpartitioned")
-    for (old, new) in _RENAMES.items():
-        op.execute(f"ALTER TABLE {BACKUP} RENAME CONSTRAINT {old} TO {new}")
-    for (old, new) in _INDEX_RENAMES.items():
-        op.execute(f"ALTER INDEX modeling.{old} RENAME TO {new}")
+    #
+    # Constraint/index names are unique per schema, not per table, so
+    # renaming the table alone isn't enough -- its PK/FK and secondary
+    # indexes stay under their original names and would collide with
+    # the new table below. Rename the PK/FK (known names); the three
+    # secondary indexes aren't needed on an inert backup table, so
+    # just drop them instead of guessing what to rename them to.
+    op.execute(f"ALTER TABLE {TABLE} RENAME TO {BACKUP_NAME}")
+    op.execute(f"ALTER TABLE {BACKUP} RENAME CONSTRAINT {_PK_RENAME[0]} TO {_PK_RENAME[1]}")
+    op.execute(f"ALTER TABLE {BACKUP} RENAME CONSTRAINT {_FK_RENAME[0]} TO {_FK_RENAME[1]}")
+    for name in _secondary_index_names(conn, BACKUP_NAME):
+        op.execute(f'DROP INDEX {SCHEMA}."{name}"')
 
     op.execute(f"""
         CREATE TABLE {TABLE} (
@@ -82,11 +109,11 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     # Dropping the partitioned parent drops every attached partition
-    # -- the DEFAULT partition included -- with it.
+    # -- the DEFAULT partition included -- with it. Its indexes go
+    # with it too, so there's nothing to recreate on the backup table
+    # (they were dropped, not renamed, in upgrade()).
     op.execute(f"DROP TABLE {TABLE}")
 
     op.execute(f"ALTER TABLE {BACKUP} RENAME TO modeling_frontend_results")
-    for (old, new) in _RENAMES.items():
-        op.execute(f"ALTER TABLE {TABLE} RENAME CONSTRAINT {new} TO {old}")
-    for (old, new) in _INDEX_RENAMES.items():
-        op.execute(f"ALTER INDEX modeling.{new} RENAME TO {old}")
+    op.execute(f"ALTER TABLE {TABLE} RENAME CONSTRAINT {_PK_RENAME[1]} TO {_PK_RENAME[0]}")
+    op.execute(f"ALTER TABLE {TABLE} RENAME CONSTRAINT {_FK_RENAME[1]} TO {_FK_RENAME[0]}")
