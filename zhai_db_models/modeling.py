@@ -95,6 +95,9 @@ class DataSourceType(enum.Enum):
     inference = "inference"
 
 class ModelingFrontendResults(Base):
+    # Partitioned by LIST (version) -- one partition per write, created
+    # and torn down by the writer. See the PR that introduced this
+    # (git blame) for the full rationale and the migration.
     __tablename__ = "modeling_frontend_results"
     __table_args__ = (
         PrimaryKeyConstraint(
@@ -107,6 +110,7 @@ class ModelingFrontendResults(Base):
         ),
         {
             "schema": "modeling",
+            "postgresql_partition_by": "LIST (version)",
         },
     )
 
