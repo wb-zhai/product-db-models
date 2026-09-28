@@ -19,6 +19,21 @@ TABLE = "modeling.modeling_frontend_results"
 BACKUP = "modeling.modeling_frontend_results_unpartitioned"
 DEFAULT_PARTITION = "modeling.modeling_frontend_results_default"
 
+# Constraint/index names are unique per schema, not per table --
+# ALTER TABLE ... RENAME leaves these attached to the renamed-away
+# table under their original names, which then collide with the new
+# table's CREATE TABLE. Give the old copies a suffixed name instead
+# of leaving them as-is.
+_RENAMES = {
+    "pk_modeling_frontend_results": "pk_modeling_frontend_results_unpartitioned",
+    "fk_modeling_frontend_results_adm_code": "fk_modeling_frontend_results_adm_code_unpartitioned",
+}
+_INDEX_RENAMES = {
+    "ix_modeling_frontend_results_version": "ix_modeling_frontend_results_version_unpartitioned",
+    "ix_modeling_frontend_results_data_source": "ix_modeling_frontend_results_data_source_unpartitioned",
+    "ix_modeling_frontend_results_feature_type": "ix_modeling_frontend_results_feature_type_unpartitioned",
+}
+
 
 def upgrade() -> None:
     """Upgrade schema."""
@@ -27,6 +42,10 @@ def upgrade() -> None:
     # dropping it, so whatever rows it currently holds aren't silently
     # lost; left for manual cleanup once confirmed unneeded.
     op.execute(f"ALTER TABLE {TABLE} RENAME TO modeling_frontend_results_unpartitioned")
+    for (old, new) in _RENAMES.items():
+        op.execute(f"ALTER TABLE {BACKUP} RENAME CONSTRAINT {old} TO {new}")
+    for (old, new) in _INDEX_RENAMES.items():
+        op.execute(f"ALTER INDEX modeling.{old} RENAME TO {new}")
 
     op.execute(f"""
         CREATE TABLE {TABLE} (
@@ -65,4 +84,9 @@ def downgrade() -> None:
     # Dropping the partitioned parent drops every attached partition
     # -- the DEFAULT partition included -- with it.
     op.execute(f"DROP TABLE {TABLE}")
+
     op.execute(f"ALTER TABLE {BACKUP} RENAME TO modeling_frontend_results")
+    for (old, new) in _RENAMES.items():
+        op.execute(f"ALTER TABLE {TABLE} RENAME CONSTRAINT {new} TO {old}")
+    for (old, new) in _INDEX_RENAMES.items():
+        op.execute(f"ALTER INDEX modeling.{new} RENAME TO {old}")
