@@ -129,7 +129,7 @@ class ModelingFrontendResults(Base):
     )
 
     version = Column(
-        UUID(as_uuid=True),
+        String,
         nullable=False,
         index=True,
     )
