@@ -18,12 +18,19 @@ down_revision: Union[str, Sequence[str], None] = '8bec26e2c403'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+source_location_enum = postgresql.ENUM(
+    'place',
+    'country',
+    name='source_location_enum',
+)
+
+
 def upgrade() -> None:
     """Upgrade schema."""
     op.create_table('article_source_locations',
     sa.Column('geo_names_id', sa.Integer(), autoincrement=False, nullable=False),
     sa.Column('parent_id', sa.Integer(), nullable=True),
-    sa.Column('location_type', postgresql.ENUM('place', 'country', name='source_location_enum'), nullable=False),
+    sa.Column('location_type', source_location_enum, nullable=False),
     sa.Column('wiki_uri', sa.String(), nullable=True),
     sa.Column('feature_code', sa.String(), nullable=True),
     sa.Column('adm0_code_iso_2', sa.String(), nullable=True),
@@ -55,3 +62,4 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_article_source_locations_location_type'), table_name='article_source_locations')
     op.drop_index('idx_article_source_locations_geom', table_name='article_source_locations', postgresql_using='gist')
     op.drop_table('article_source_locations')
+    source_location_enum.drop(op.get_bind())
