@@ -191,7 +191,6 @@ class ArticleSourceLocation(Base):
         nullable=False,
         index=True,
     )
-    label = Column(String, nullable=True)
     wiki_uri = Column(String, nullable=True)
     feature_code = Column(String, nullable=True) # places only
     adm0_code_iso_2 = Column(String, nullable=True) # countries only
