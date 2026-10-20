@@ -148,7 +148,38 @@ class ConceptUri(Base):
     def __repr__(self):
         return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
 
+#
+# Event Registry article source data model. See:
+# https://github.com/EventRegistry/event-registry-python/wiki/Data-models#news-source-data-model
+#
 
+class SourceType(enum.Enum):
+    place = 'place'
+    country = 'country'
+
+class ArticleSource(Base):
+    __tablename__ = "article_sources"
+
+    source_uri = Column(String, primary_key=True)
+    parent_uri = Column(String, nullable=True)
+    location_type = Column(
+        ENUM(
+            SourceType,
+            name="source_enum",
+            create_type=True,
+        ),
+        nullable=False,
+        index=True,
+    )
+    title = Column(String)
+    geoNamesId = Column(String, nullable=False)
+    featureCode = Column(String, nullable=False)
+    wikiUri = Column(String, nullable=False)
+    geom = Column(Geometry("POINT", srid=4326), nullable=False)
+
+#
+#
+#
 class TaggedMethods(Base):
     __tablename__ = "tag_method_urls"
 
