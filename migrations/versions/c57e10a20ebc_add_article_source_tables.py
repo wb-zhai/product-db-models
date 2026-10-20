@@ -28,7 +28,7 @@ def upgrade() -> None:
     sa.Column('feature_code', sa.String(), nullable=True),
     sa.Column('adm0_code_iso_2', sa.String(), nullable=True),
     sa.Column('adm0_code_iso_3', sa.String(), nullable=True),
-    sa.Column('geom', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326, dimension=2, from_text='ST_GeomFromEWKT', name='geometry'), nullable=True),
+    sa.Column('geom', geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326, dimension=2, from_text='ST_GeomFromEWKT', name='geometry', spatial_index=False), nullable=True),
     sa.CheckConstraint("location_type = 'place' OR parent_id IS NULL", name='check_article_source_locations_country_parent'),
     sa.ForeignKeyConstraint(['parent_id'], ['article_source_locations.geo_names_id'], name='fk_article_source_locations_parent_id'),
     sa.PrimaryKeyConstraint('geo_names_id')
