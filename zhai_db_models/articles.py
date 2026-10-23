@@ -3,6 +3,7 @@ import enum
 from geoalchemy2 import Geometry
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     Column,
     DateTime,
     Float,
@@ -148,7 +149,77 @@ class ConceptUri(Base):
     def __repr__(self):
         return f"<ConceptUri(concept_uri='{self.concept_uri}')>"
 
+#
+# Event Registry article source data model. See:
+# https://github.com/EventRegistry/event-registry-python/wiki/Data-models#news-source-data-model
+#
 
+class SourceLocationType(enum.Enum):
+    place = 'place'
+    country = 'country'
+
+class ArticleSourceLocation(Base):
+    # A source's ['location'] is a single location. When it is a
+    # place, Event Registry nests the place's country within it
+    # (['location']['country']); that country is stored as its own
+    # row and referenced by the place via parent_id.
+    __tablename__ = "article_source_locations"
+    __table_args__ = (
+        CheckConstraint(
+            "location_type = 'place' OR parent_id IS NULL",
+            name="check_article_source_locations_country_parent",
+        ),
+    )
+
+    # GeoNames IDs are assigned by GeoNames, not by the database
+    geo_names_id = Column(Integer, primary_key=True, autoincrement=False)
+    parent_id = Column(
+        Integer,
+        ForeignKey(
+            "article_source_locations.geo_names_id",
+            name="fk_article_source_locations_parent_id",
+        ),
+        nullable=True,
+        index=True,
+    )
+    location_type = Column(
+        ENUM(
+            SourceLocationType,
+            name="source_location_enum",
+            create_type=True,
+        ),
+        nullable=False,
+        index=True,
+    )
+    wiki_uri = Column(String, nullable=True)
+    feature_code = Column(String, nullable=True) # places only
+    adm0_code_iso_2 = Column(String, nullable=True) # countries only
+    adm0_code_iso_3 = Column(String, nullable=True) # countries only
+    # geoalchemy2 creates the GiST index (idx_article_source_locations_geom)
+    geom = Column(Geometry("POINT", srid=4326), nullable=True)
+
+class ArticleSource(Base):
+    __tablename__ = "article_sources"
+
+    source_uri = Column(String, primary_key=True)
+    title = Column(String, nullable=True)
+    location_id = Column(
+        Integer,
+        ForeignKey(
+            "article_source_locations.geo_names_id",
+            name="fk_article_sources_location_id",
+        ),
+        nullable=True,
+        index=True,
+    )
+    location_validated = Column(Boolean, nullable=True)
+
+    def __repr__(self):
+        return f"<ArticleSource(source_uri='{self.source_uri}')>"
+
+#
+#
+#
 class TaggedMethods(Base):
     __tablename__ = "tag_method_urls"
 
