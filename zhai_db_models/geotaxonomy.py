@@ -130,7 +130,7 @@ class GeotaxonomyPolygon(Base):
 class GeoNameType(enum.Enum):
     display = "display"
     search = "search"
-    wikipedia = "wikipedia"
+    concept = "concept" # Event Registry concept type
 
 class GeotaxonomyNames(Base):
     __tablename__ = "geo_taxonomy_names"
